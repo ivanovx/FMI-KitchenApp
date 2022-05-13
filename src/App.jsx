@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 
-export default function App(props) {
-    const [users, setUsers] = useState({});
-    const [recipes, setRecipes] = useState({});
+import Home from "./components/Home";
+import User, { SignIn, SignUp } from "./components/User";
 
-    useEffect(() => {
-
-    }, [users]);
-
-    useEffect(() => {
-
-    }, [recipes]);
-
-    return <h1>Hello Word</h1>
+export default function App() {
+    return (
+        <Routes>
+            <Route path="/" index element={<Home />} />
+            <Route path="/user" element={<User />}>
+                <Route path="signin" element={<SignIn />} />
+                <Route path="signup" element={<SignUp />} />
+            </Route>
+        </Routes>
+    );
 };
