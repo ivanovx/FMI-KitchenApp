@@ -1,5 +1,6 @@
 export const CURRENT_USER_KEY = "user";
 export const USERS_KEY = "users";
+export const RECIPES_KEY = "recipes";
 
 const storage = {
     get(key, defaultValue = undefined) {

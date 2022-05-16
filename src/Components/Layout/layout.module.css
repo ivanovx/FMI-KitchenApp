@@ -1,0 +1,12 @@
+.Layout {
+    margin: 2rem auto;
+}
+
+.WelcomeUser {
+    padding: 0 0.5rem;
+}
+
+.Content {
+    margin: 0 auto;
+    max-width: 950px;
+}
