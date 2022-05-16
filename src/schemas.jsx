@@ -8,3 +8,8 @@ export const SignUpSchema = Yup.object().shape({
     avatar: Yup.string().url().required("Please enter avatar url"),
     description: Yup.string().max(512, "Too long!"),
 });
+
+export const SignInSchema = Yup.object().shape({
+    username: Yup.string(),
+    password: Yup.string(),
+});

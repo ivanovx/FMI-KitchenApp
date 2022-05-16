@@ -12,7 +12,7 @@ import { Formik, Form, Field } from 'formik';
 import { fakeAuthProvider } from "./auth";
 import './App.css'
 
-import { SignUpSchema } from "./schemas";
+import { SignUpSchema, SignInSchema } from "./schemas";
 
 import storage, { USERS_KEY, CURRENT_USER_KEY } from "./storage";
 
@@ -74,15 +74,17 @@ function AuthProvider({ children }) {
     React.useEffect(() => storage.set(USERS_KEY, users), [users]);
 
     const signUp = newUser => {
-        setUser(newUser);
         setUsers(oldUsers => [...oldUsers, newUser]);
+        setUser(newUser);
     };
 
-    const signIn = newUser => setUser(newUser);
+    const signIn = newUser => {
+        setUser(users.find(u => u.username === newUser.username /* and password */) || null);
+    };
 
     const signOut = () => setUser(null);
 
-    let value = { user, signUp, signIn, signOut };
+    const value = { user, signUp, signIn, signOut };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -175,18 +177,10 @@ function SignIn() {
         let formData = new FormData(event.currentTarget);
         let username = formData.get("username");
 
-        auth.signIn(username, () => {
-            // Send them back to the page they tried to visit when they were
-            // redirected to the login page. Use { replace: true } so we don't create
-            // another entry in the history stack for the login page.  This means that
-            // when they get to the protected page and click the back button, they
-            // won't end up back on the login page, which is also really nice for the
-            // user experience.
-            navigate(from, { replace: true });
-        });
+        auth.signIn({username});
     }
 
-    return (
+    /*return (
         <div>
             <p>You must log in to view the page at {from}</p>
 
@@ -197,6 +191,30 @@ function SignIn() {
                 <button type="submit">Login</button>
             </form>
         </div>
+    );*/
+
+    const initialValues = {
+        username: "",
+        password: "",
+    };
+
+    const onSubmit = (values) => {
+        auth.signIn(values);
+    };
+
+    return (
+        <Formik initialValues={initialValues} validationSchema={SignInSchema} onSubmit={onSubmit}>
+            {({ errors, touched }) => (
+                <Form>
+                    <Field name="username" />
+                    {errors.username && touched.username ? <div>{errors.username}</div> : null}
+                    <Field name="password" type="password" />
+                    {errors.password && touched.password ? <div>{errors.password}</div> : null}
+            
+                    <button type="submit">Sign In</button>
+                </Form>
+            )}
+        </Formik>
     );
 }
 
