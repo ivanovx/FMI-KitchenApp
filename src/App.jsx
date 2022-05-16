@@ -8,16 +8,18 @@ import {
     Navigate,
     Outlet
 } from "react-router-dom";
+import { Formik, Form, Field } from 'formik';
 import { fakeAuthProvider } from "./auth";
 import './App.css'
+
+import { SignUpSchema } from "./schemas";
 
 import storage, { USERS_KEY, CURRENT_USER_KEY } from "./storage";
 
 export default function App() {
     return (
         <div className="App">
-            <AuthProvider >
-                <h1>Auth Example</h1>
+            <AuthProvider>
                 <Routes>
                     <Route element={<Layout />}>
                         <Route index element={<PublicPage />} />
@@ -53,9 +55,6 @@ function Layout() {
                 <li>
                     <Link to="/signin">Sign In</Link>
                 </li>
-                <li>
-                    <Link to="/protected">Protected Page</Link>
-                </li>
             </ul>
 
             <Outlet />
@@ -67,43 +66,28 @@ let AuthContext = React.createContext(null);
 function AuthProvider({ children }) {
     const initialUsers = storage.get(USERS_KEY, []);
     const curentUser = storage.get(CURRENT_USER_KEY, null);
+    
     const [user, setUser] = React.useState(curentUser);
     const [users, setUsers] = React.useState(initialUsers);
 
     React.useEffect(() => storage.set(CURRENT_USER_KEY, user), [user]);
-
     React.useEffect(() => storage.set(USERS_KEY, users), [users]);
 
-    let signUp = (newUser, callback) => {
-        return fakeAuthProvider.signup(() => {
-            setUsers(oldUsers => [...oldUsers, newUser]);
-            setUser(newUser);
-            callback();
-        })
+    const signUp = newUser => {
+        setUser(newUser);
+        setUsers(oldUsers => [...oldUsers, newUser]);
     };
 
-    let signIn = (newUser, callback) => {
-        return fakeAuthProvider.signin(() => {
-            setUser(newUser);
-            callback();
-        });
-    };
+    const signIn = newUser => setUser(newUser);
 
-    let signOut = (callback) => {
-        return fakeAuthProvider.signout(() => {
-            setUser(null);
-            callback();
-        });
-    };
+    const signOut = () => setUser(null);
 
     let value = { user, signUp, signIn, signOut };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-function useAuth() {
-    return React.useContext(AuthContext);
-}
+const useAuth = () => React.useContext(AuthContext);
 
 function AuthStatus() {
     const auth = useAuth();
@@ -112,17 +96,15 @@ function AuthStatus() {
     if (!auth.user) {
         return <p>You are not logged in.</p>;
     }
+    const signOut = () => {
+        auth.signOut();
+        navigate("/");
+    };
 
     return (
         <p>
-            Welcome {auth.user}!{" "}
-            <button
-                onClick={() => {
-                    auth.signOut(() => navigate("/"));
-                }}
-            >
-                Sign out
-            </button>
+            Welcome {auth.user.username}!{" "}
+            <button onClick={signOut}>Sign out</button>
         </p>
     );
 }
@@ -130,15 +112,9 @@ function AuthStatus() {
 function RequireAuth({ children }) {
     let auth = useAuth();
     let location = useLocation();
-    let navigate = useNavigate()
 
     if (!auth.user) {
-        // Redirect them to the /login page, but save the current location they were
-        // trying to go to when they were redirected. This allows us to send them
-        // along to that page after they login, which is a nicer user experience
-        // than dropping them off on the home page.
         return <Navigate to="/signin" state={{ from: location }} />;
-        // navigate("/login", {state: { from: location } })
     }
 
     return children;
@@ -149,36 +125,40 @@ function SignUp() {
     let location = useLocation();
     let auth = useAuth();
 
-    let from = location.state?.from?.pathname || "/";
+    const initialValues = {
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        avatar: "",
+        description: "",
+    };
 
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        let formData = new FormData(event.currentTarget);
-        let username = formData.get("username");
-
-        auth.signUp(username, () => {
-            // Send them back to the page they tried to visit when they were
-            // redirected to the login page. Use { replace: true } so we don't create
-            // another entry in the history stack for the login page.  This means that
-            // when they get to the protected page and click the back button, they
-            // won't end up back on the login page, which is also really nice for the
-            // user experience.
-            navigate(from, { replace: true });
-        });
-    }
+    const onSubmit = (values) => {
+        auth.signUp(values);
+    };
 
     return (
-        <div>
-            <p>You must log in to view the page at {from}</p>
+        <Formik initialValues={initialValues} validationSchema={SignUpSchema} onSubmit={onSubmit}>
+            {({ errors, touched }) => (
+                <Form>
+                    <Field name="name" />
+                    {errors.name && touched.name ? <div>{errors.name}</div> : null}
+                    <Field name="username" />
+                    {errors.username && touched.username ? <div>{errors.username}</div> : null}
+                    <Field name="email" type="email" />
+                    {errors.email && touched.email ? <div>{errors.email}</div> : null}
+                    <Field name="password" type="password" />
+                    {errors.password && touched.password ? <div>{errors.password}</div> : null}
+                    <Field name="avatar" />
+                    {errors.avatar && touched.avatar ? <div>{errors.avatar}</div> : null}
+                    <Field name="description" />
+                    {errors.description && touched.description ? <div>{errors.description}</div> : null}
 
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username: <input name="username" type="text" />
-                </label>{" "}
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
+                    <button type="submit">Sign Up</button>
+                </Form>
+            )}
+        </Formik>
     );
 }
 
