@@ -3,8 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import Layout from "./Components/Layout";
 import AuthProvider, { SignIn, SignUp } from "./Components/Auth";
-import Recipes, { CreateRecipe, MyRecipes } from "./Components/Recipes";
-import RecipesProvider from "./Components/Recipes";
+import RecipesProvider, { MyRecipes, AllRecipes, CreateRecipe, Recipe } from "./Components/Recipes";
 
 export default function App() {
     return (
@@ -13,10 +12,11 @@ export default function App() {
                 <RecipesProvider>
                     <Routes>
                         <Route element={<Layout />}>
-                            <Route index element={<Recipes />} />
+                            <Route index element={<AllRecipes />} />
                             <Route path="/signup" element={<SignUp />} />
                             <Route path="/signin" element={<SignIn />} />
                             <Route path="/recipes" element={<MyRecipes />} />
+                            <Route path="/recipes/:id" element={<Recipe />} />
                             <Route path="/create-recipe" element={<CreateRecipe />} />
                         </Route>
                     </Routes>

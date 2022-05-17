@@ -55,6 +55,5 @@ export {
     SignIn,
     SignUp,
     useAuth,
-    AuthContext,
     RequireAuth,
 }

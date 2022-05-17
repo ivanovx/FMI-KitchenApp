@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../Auth";
+import Recipe from "./Recipe";
 import MyRecipes from "./MyRecipes";
 import AllRecipes from "./AllRecipes";
 import CreateRecipe from "./CreateRecipe";
@@ -20,27 +21,27 @@ export default function RecipesProvider({ children }) {
 
     useEffect(() => storage.set(RECIPES_KEY, recipes), [recipes]);
 
-    const allRecipes = () => recipes;
-
-    const createRecipe = newRecipe => {
-        setRecipes(oldRecipes => [...oldRecipes, {
+    const create = newRecipe => {
+        const createdRecipe = {
             id: Math.random().toString(16).slice(2),
             createdOn: new Date(),
             updatedOn: new Date(),
             userId: auth.user.id,
             ...newRecipe
-        }]);
+        };
+
+        setRecipes(oldRecipes => [createdRecipe, ...oldRecipes]);
 
         navigate("/");
     };
-
-    const updatedRecipe = updatedRecipe => {
+    
+    const update = updatedRecipe => {
         setRecipes(oldRecipes => [...oldRecipes, updatedRecipe]);
 
         navigate("/");
     };
 
-    return <RecipesContext.Provider value={{ allRecipes, createRecipe, updatedRecipe }}>{children}</RecipesContext.Provider>
+    return <RecipesContext.Provider value={{ recipes, create, update }}>{children}</RecipesContext.Provider>
 }
 
-export { useRecipes, MyRecipes, AllRecipes, CreateRecipe }
+export { useRecipes, MyRecipes, AllRecipes, CreateRecipe, Recipe }
