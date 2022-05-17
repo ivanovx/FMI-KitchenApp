@@ -14,7 +14,7 @@ export default function Recipe() {
             <img src={recipe.result} />
             <p>{recipe.shortDescription}</p>
             <p>Time to cooking: {recipe.timeToCooking} min</p>
-            <ol>Needed products {recipe.products.split(",").map(product => <li>{product}</li>)}</ol>
+            <ol>Needed products {recipe.products.split(",").map(product => <li key={product}>{product}</li>)}</ol>
             <p>{recipe.description}</p>
         </div>
     )

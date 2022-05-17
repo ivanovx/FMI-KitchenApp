@@ -40,7 +40,7 @@ export default function CreateRecipe() {
                     fullWidth
                     id="shortDescription"
                     name="shortDescription"
-                    label="Recipe short description"
+                    label="Short description"
                     value={formik.values.shortDescription}
                     onChange={formik.handleChange}
                     error={formik.touched.shortDescription && Boolean(formik.errors.shortDescription)}
@@ -82,7 +82,7 @@ export default function CreateRecipe() {
                     fullWidth
                     id="description"
                     name="description"
-                    label="description"
+                    label="Description"
                     value={formik.values.description}
                     onChange={formik.handleChange}
                     error={formik.touched.description && Boolean(formik.errors.description)}

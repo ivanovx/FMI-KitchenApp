@@ -36,12 +36,14 @@ export default function RecipesProvider({ children }) {
     };
     
     const update = updatedRecipe => {
-        setRecipes(oldRecipes => [...oldRecipes, updatedRecipe]);
+        setRecipes(oldRecipes => [updatedRecipe, ...oldRecipes]);
 
         navigate("/");
     };
 
-    return <RecipesContext.Provider value={{ recipes, create, update }}>{children}</RecipesContext.Provider>
+    const remove = removedRecipeId => setRecipes(oldRecipes => oldRecipes.filter(r => r.id !== removedRecipeId));
+
+    return <RecipesContext.Provider value={{ recipes, create, update, remove }}>{children}</RecipesContext.Provider>
 }
 
 export { useRecipes, MyRecipes, AllRecipes, CreateRecipe, Recipe }
