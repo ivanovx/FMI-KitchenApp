@@ -13,10 +13,7 @@ export default function Layout() {
         <div className={styles.Layout}>
             <Grid direction="row" container spacing={2} justifyContent="center" alignItems="center">
                 <Grid item xs={2}>
-                    <Link to="/">Home</Link>
-                </Grid>
-                <Grid item xs={2}>
-                    <Link to="/recipes">Recipes</Link>
+                    <Link to="/">Recipes</Link>
                 </Grid>
                 {!auth.user && (
                     <>
@@ -30,8 +27,16 @@ export default function Layout() {
                 )}
                 {auth.user && (
                     <>
-                        <span className={styles.WelcomeUser}>Welcome {auth.user.username}!</span>
-                        <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
+                        <Grid item xs={2}>
+                            <Link to="/recipes">My Recipes</Link>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Link to="/create-recipe">Create Recipe</Link>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <span className={styles.WelcomeUser}>Welcome {auth.user.username}!</span>
+                            <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
+                        </Grid>
                     </>
                 )}
             </Grid>

@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import storage, { USERS_KEY, CURRENT_USER_KEY } from "../../storage";
 
-export const AuthContext = React.createContext(null);
+import SignUp from "./SignUp";
+import SignIn from "./SignIn";
+import RequireAuth from "./RequireAuth";
 
-export const useAuth = () => React.useContext(AuthContext);
+const AuthContext = React.createContext(null);
+const useAuth = () => React.useContext(AuthContext);
 
 export default function AuthProvider({ children }) {
+    const navigate = useNavigate();
+
     const initialUsers = storage.get(USERS_KEY, []);
     const curentUser = storage.get(CURRENT_USER_KEY, null);
     
@@ -19,20 +25,36 @@ export default function AuthProvider({ children }) {
     const signUp = newUser => {
         const createdUser = {
             id: Math.random().toString(16).slice(2),
-            createdOn: Date.now(),
-            updatedOn: Date.now(),
+            createdOn: new Date(),
+            updatedOn: new Date(),
             ...newUser,
         };
         
         setUser(createdUser);
         setUsers(oldUsers => [...oldUsers, createdUser]);
+
+        navigate("/", { replace: true });
     };
 
-    const signIn = newUser => setUser(users.find(u => u.username === newUser.username /* and password */) || null);
+    const signIn = newUser => {
+        setUser(users.find(u => u.username === newUser.username /* and password */) || null);
 
-    const signOut = () => setUser(null);
+        navigate("/", { replace: true });
+    };
 
-    const value = { user, signUp, signIn, signOut };
+    const signOut = () => { 
+        setUser(null);
+        
+        navigate("/");
+    };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>;
+}
+
+export {
+    SignIn,
+    SignUp,
+    useAuth,
+    AuthContext,
+    RequireAuth,
 }
