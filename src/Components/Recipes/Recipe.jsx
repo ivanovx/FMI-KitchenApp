@@ -11,6 +11,7 @@ export default function Recipe() {
     return (
         <div className="Recipe">
             <h1>{recipe.name}</h1>
+            <time>{recipe.createdOn}</time>
             <img src={recipe.result} />
             <p>{recipe.shortDescription}</p>
             <p>Time to cooking: {recipe.timeToCooking} min</p>
