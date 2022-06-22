@@ -1,116 +1,134 @@
-import React, { useId } from "react";
-import { useFormik, Formik, Form, Field, FieldArray } from "formik";
-import { TextField, Button, Select, MenuItem, InputLabel } from "@mui/material";
+import React from "react";
+import { FormikProvider, FieldArray, useFormik } from "formik";
+import { TextField, Button, Container, Grid } from "@mui/material";
 
-/*
-  <FieldArray
-                        name="steps"
-                        render={arrayHelpers => (
-                            <div>
-                                {props.values.steps && props.values.steps.length > 0 ? (
-                                    props.values.steps.map((step: any, index: number) => (
-                                        <div key={index}>
-                                            <Field type="text" name={`steps.${index}.description`} placeholder="Description" />
-                                            <Field type="file" name={`steps.${index}.image`} placeholder="Result" />
-                                            <button
-                                                type="button"
-                                                onClick={() => arrayHelpers.remove(index)}
-                                            >
-                                                -
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => arrayHelpers.insert(index, '')}
-                                            >
-                                                +
-                                            </button>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <button type="button" onClick={() => arrayHelpers.push('')}>
-                                        Add step
-                                    </button>
-                                )}
-                            </div>
-                        )}
-                    />
-
-*/
-
-export default function CreateRecipe() {
-    const initialValues = {
-        title: "",
-        result: "",
-        description: "",
-        cookingTime: "",
-        difficulty: 1,
-        products: [
-            { name: "", amount: 0 }
-        ],
-        steps: [
-            { description: "", result: "" }
-        ],
-    };
-
-    const onSubmit = (values: any) => {
-        console.log(values);
-    };
+function Form() {
+    const formik = useFormik({
+        initialValues: {
+            title: "",
+            result: "",
+            description: "",
+            cookingTime: "",
+            difficulty: 1,
+            products: [
+                { name: "", amount: 0 }
+            ],
+            steps: [
+                { description: "", result: "" }
+            ],
+        },
+        onSubmit: (values: any) => {
+            console.log(values);
+        }
+    });
 
     return (
-        <div>
-            <h1>Create Recipe</h1>
-            <Formik initialValues={initialValues} onSubmit={onSubmit}>
-                {props => (
-                    <Form>
-                        <Field type="text" name="title" placeholder="Recipe Title" />
-                        <Field type="text" name="description" placeholder="Recipe Description" />
-                        <Field type="number" name="cookingTime" placeholder="Time to cooking" />
-                        <Field type="file" name="result" placeholder="Result" />
-                        <FieldArray name="products">
-                            {({ push, remove }) => (
-                                <>
-                                    {props.values.products.length > 0 && props.values.products.map((product: any, index: number) => (
-                                        <div key={index}>
-                                            <Field type="text" name={`products.${index}.name`} />
-                                            <Field type="number" name={`products.${index}.amount`} />
+        <Grid container spacing={2}>
+        <FormikProvider value={formik}>
+            <form onSubmit={formik.handleSubmit}>
+                <TextField
+                    fullWidth
+                    name="title"
+                    label="Title"
+                    value={formik.values.title}
+                    onChange={formik.handleChange}
+                    error={formik.touched.title && Boolean(formik.errors.title)}
+                    helperText={formik.touched.title && formik.errors.title}
+                />
+                <TextField
+                    fullWidth
+                    name="description"
+                    label="Description"
+                    multiline
+                    rows={5}
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
+                    error={formik.touched.description && Boolean(formik.errors.description)}
+                    helperText={formik.touched.description && formik.errors.description}
+                />
+                <TextField
+                    fullWidth
+                    name="result"
+                    label="Result"
+                    type="file"
+                    value={formik.values.result}
+                    onChange={formik.handleChange}
+                    error={formik.touched.result && Boolean(formik.errors.result)}
+                    helperText={formik.touched.result && formik.errors.result}
+                />
+                <TextField
+                    fullWidth
+                    name="cookingTime"
+                    label="Time"
+                    type="number"
+                    value={formik.values.cookingTime}
+                    onChange={formik.handleChange}
+                    error={formik.touched.cookingTime && Boolean(formik.errors.cookingTime)}
+                    helperText={formik.touched.cookingTime && formik.errors.cookingTime}
+                />
+                <FieldArray name="products">
+                    {({ push, remove }) => (
+                        <>
+                            {formik.values.products.length > 0 && formik.values.products.map((product: any, index: number) => (
+                                <div key={index}>
+                                    <TextField
+                                        label="Name"
+                                        name={`products.${index}.name`}
+                                        value={product.name}
+                                        onChange={formik.handleChange}
+                                    />
+                                    <TextField
+                                        label="Amount"
+                                        type="number"
+                                        name={`products.${index}.amount`}
+                                        value={product.amount}
+                                        onChange={formik.handleChange}
+                                    />
+                                    <Button onClick={() => remove(index)}>X</Button>
+                                </div>
+                            ))}
+                            <Button onClick={() => push({ name: '', amount: '' })}>Add Product</Button>
+                        </>
+                    )}
+                </FieldArray>
+                <FieldArray name="steps">
+                    {({ push, remove }) => (
+                        <>
+                            {formik.values.steps.length > 0 && formik.values.steps.map((step: any, index: number) => (
+                                <div key={index}>
+                                    <TextField
+                                        label="Description"
+                                        multiline
+                                        rows={3}
+                                        name={`steps.${index}.description`}
+                                        value={step.description}
+                                        onChange={formik.handleChange}
+                                    />
+                                    <TextField
+                                        label="Result"
+                                        type="file"
+                                        name={`products.${index}.result`}
+                                        value={step.result}
+                                        onChange={formik.handleChange}
+                                    />
+                                    <Button onClick={() => remove(index)}>X</Button>
+                                </div>
+                            ))}
+                            <Button onClick={() => push({ name: '', amount: '' })}>Add Step</Button>
+                        </>
+                    )}
+                </FieldArray>
+                <Button type="submit">Create</Button>
+            </form>
+        </FormikProvider>
+        </Grid>
+    );
+}
 
-                                            <button type="button" onClick={() => remove(index)}>X</button>
-                                        </div>
-                                    ))}
-                                    <button type="button" onClick={() => push({ name: '', amount: '' })}>
-                                        Add Product
-                                    </button>
-                                </>
-                            )}
-                        </FieldArray>
-
-                        <FieldArray name="steps">
-                            {({ push, remove }) => (
-                                <>
-                                    {props.values.steps.length > 0 && props.values.steps.map((step: any, index: number) => (
-                                        <div key={index}>
-                                            <Field type="text" name={`steps.${index}.description`} />
-                                            <Field type="file" name={`steps.${index}.result`} />
-
-                                            <button type="button" onClick={() => remove(index)}>X</button>
-                                        </div>
-                                    ))}
-                                    <button type="button" onClick={() => push({ description: '', result: '' })}>
-                                        Add Step
-                                    </button>
-                                </>
-                            )}
-                        </FieldArray>
-
-                        <Field as="select" name="difficulty">
-                            <option value="1">Fast</option>
-                            <option value="2">Easy</option>
-                            <option value="3">Hard</option>
-                        </Field>
-                        <Button type="submit">Create</Button>
-                    </Form>
-                )}
-            </Formik>
-        </div>
+export default function CreateRecipe() {
+    return (
+        <Container maxWidth="md">
+            <Form />
+        </Container>
     );
 }
