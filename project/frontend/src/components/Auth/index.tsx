@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AuthContext } from "../../modules/authContext";
 
-type AuthProviderProps {
+type AuthProviderProps = {
     children: React.ReactNode;
 }
 
