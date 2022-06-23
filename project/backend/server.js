@@ -1,22 +1,28 @@
+const cors = require("cors");
 const logger = require("morgan");
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
+const recipesRoutes = require("./routes/recipes");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DB_URL || "mongodb://0.0.0.0:27017/kitchen";
+
+const CORS_OPTIONS = {
+    origin: "http://localhost:3000"
+};
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors(CORS_OPTIONS));
 app.use(logger(":method :url :status :res[content-length] - :response-time ms"));
 
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
+app.use("/recipes", recipesRoutes);
 
 async function runServer() {
     await mongoose.connect(DB_URL);

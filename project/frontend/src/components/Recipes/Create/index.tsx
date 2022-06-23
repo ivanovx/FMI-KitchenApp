@@ -1,29 +1,38 @@
 import React from "react";
+import axios from "axios";
+
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container, Grid } from "@mui/material";
 
+
 function Form() {
+    const initialValues = {
+        title: "",
+        result: "",
+        description: "",
+        cookingTime: "",
+        difficulty: 1,
+        products: [
+            { name: "", amount: 0 }
+        ],
+        steps: [
+            { description: "", result: "" }
+        ],
+    };
+
+    const onSubmit = (values: any) => {
+        axios
+            .post("http://localhost:5000/recipes/create", values)
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+    };
+
     const formik = useFormik({
-        initialValues: {
-            title: "",
-            result: "",
-            description: "",
-            cookingTime: "",
-            difficulty: 1,
-            products: [
-                { name: "", amount: 0 }
-            ],
-            steps: [
-                { description: "", result: "" }
-            ],
-        },
-        onSubmit: (values: any) => {
-            console.log(values);
-        }
+        initialValues,
+        onSubmit,
     });
 
     return (
-        <Grid container spacing={2}>
         <FormikProvider value={formik}>
             <form onSubmit={formik.handleSubmit}>
                 <TextField
@@ -107,7 +116,7 @@ function Form() {
                                     <TextField
                                         label="Result"
                                         type="file"
-                                        name={`products.${index}.result`}
+                                        name={`steps.${index}.result`}
                                         value={step.result}
                                         onChange={formik.handleChange}
                                     />
@@ -121,13 +130,12 @@ function Form() {
                 <Button type="submit">Create</Button>
             </form>
         </FormikProvider>
-        </Grid>
     );
 }
 
 export default function CreateRecipe() {
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
             <Form />
         </Container>
     );
