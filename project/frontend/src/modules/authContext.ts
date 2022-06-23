@@ -4,7 +4,7 @@ type IAuthContext = {
     user: any;
     signUp: (user: any) => void;
     signIn:  (user: any) => void;
-    signOut: (user: any) => void;
+    signOut: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({

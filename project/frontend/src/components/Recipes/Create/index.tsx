@@ -2,13 +2,16 @@ import React from "react";
 import axios from "axios";
 
 import { FormikProvider, FieldArray, useFormik } from "formik";
-import { TextField, Button, Container, Grid } from "@mui/material";
+import { TextField, Button, Container } from "@mui/material";
+import RequireAuth from "../../Auth/RequireAuth";
 
 export default function CreateRecipe() {
     return (
-        <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
-            <RecipeForm />
-        </Container>
+        <RequireAuth>
+            <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
+                <RecipeForm />
+            </Container>
+        </RequireAuth>
     );
 }
 
