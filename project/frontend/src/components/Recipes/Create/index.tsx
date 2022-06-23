@@ -4,6 +4,7 @@ import axios from "axios";
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container } from "@mui/material";
 import RequireAuth from "../../Auth/RequireAuth";
+import { useAuth } from "../../../modules/authContext";
 
 export default function CreateRecipe() {
     return (
@@ -16,6 +17,8 @@ export default function CreateRecipe() {
 }
 
 function RecipeForm() {
+    const { user } = useAuth();
+
     const initialValues = {
         title: "",
         result: "",
@@ -31,8 +34,12 @@ function RecipeForm() {
     };
 
     const onSubmit = (values: any) => {
+        const headers = {
+            "Authorization" : `Bearer ${user.token}`
+        };
+
         axios
-            .post("http://localhost:5000/recipes/create", values)
+            .post("http://localhost:5000/recipes/create", values, { headers })
             .then(res => console.log(res))
             .catch(err => console.log(err));
     };

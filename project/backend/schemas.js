@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -11,6 +12,30 @@ const userSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true},
 });
 
+const productSchema = new mongoose.Schema({
+    name: String, 
+    amount: String,
+});
+
+const stepSchema = new mongoose.Schema({
+    description: String,
+    result: String,
+});
+
+const recipeSchema = new mongoose.Schema({
+    title: { type: String, required: true},
+    result: { type: String, required: true},
+    description: { type: String, required: true},
+    cookingTime: { type: Number, required: true},
+    difficulty: { type: String, required: true},
+    products: [productSchema],
+    steps: [stepSchema],
+    userId: { type: ObjectId, required: true },
+    createdOn: { type: Date, default: Date.now },
+    updatedOn: { type: Date, default: Date.now },
+});
+
 module.exports = {
     userSchema,
+    recipeSchema,
 };
