@@ -4,8 +4,15 @@ import axios from "axios";
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container, Grid } from "@mui/material";
 
+export default function CreateRecipe() {
+    return (
+        <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
+            <RecipeForm />
+        </Container>
+    );
+}
 
-function Form() {
+function RecipeForm() {
     const initialValues = {
         title: "",
         result: "",
@@ -130,13 +137,5 @@ function Form() {
                 <Button type="submit">Create</Button>
             </form>
         </FormikProvider>
-    );
-}
-
-export default function CreateRecipe() {
-    return (
-        <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
-            <Form />
-        </Container>
     );
 }
