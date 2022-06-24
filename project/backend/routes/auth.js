@@ -45,7 +45,14 @@ router.post("/signup", async (req, res) => {
     const password = await bcrypt.hash(req.body.password, salt);
     const role = "user";
 
-    const user = new User({ name, email, username, password, avatar, role });
+    const user = new User({ 
+        name, 
+        email, 
+        username, 
+        password, 
+        avatar, 
+        role,
+    });
 
     try {
         await user.save();

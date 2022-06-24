@@ -2,6 +2,7 @@ const cors = require("cors");
 const logger = require("morgan");
 const express = require("express");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
@@ -16,7 +17,8 @@ const CORS_OPTIONS = {
 
 const app = express();
 
-app.use(express.json());
+app.use(bodyParser.json());
+//app.use(express.json());
 app.use(cors(CORS_OPTIONS));
 app.use(logger(":method :url :status :res[content-length] - :response-time ms"));
 
@@ -28,7 +30,12 @@ async function runServer() {
     await mongoose.connect(DB_URL);
 }
 
-runServer().then(() => {
+mongoose.connect(DB_URL).then(() => {
     console.log(`MongoDb Connection extablished to ${DB_URL}.`);
-    app.listen(PORT, () => console.log(`Application listening at http://localhost:${PORT}`));
-}).catch(err => console.log(err));
+
+    app.listen(PORT, () => {
+        console.log(`Application listening at http://localhost:${PORT}`)
+    });
+}).catch(err => {
+    console.log(err);
+});

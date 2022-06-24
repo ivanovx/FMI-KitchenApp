@@ -10,6 +10,22 @@ router.get("/", async (req, res) => {
     res.status(200).json(recipes);
 });
 
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const recipe = await Recipe.findById(id);
+
+        if(!recipe) {
+            return res.status(404).send(`Recipe with ${id} not found`);
+        }
+
+        res.status(200).json(recipe);
+    } catch(err) {
+        res.status(500).json(err);
+    }
+});
+
 router.post("/create", authenticate, async (req, res) => {
     const user = req.user;
     const {

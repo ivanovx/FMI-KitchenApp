@@ -32,7 +32,9 @@ export default function Layout() {
                             <Link to="/recipes/create">Create Recipe</Link>
                         </Grid>
                         <Grid item xs={2}>
-                            <span className={styles.WelcomeUser}>Welcome {auth.user.user.username}!</span>
+                            <span>
+                                Welcome <Link to="/user">{auth.user.user.username}</Link>!
+                            </span>
                             <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
                         </Grid>
                     </>

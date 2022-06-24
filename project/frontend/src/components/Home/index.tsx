@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Home() {
@@ -12,10 +13,12 @@ export default function Home() {
     }, []);
 
     return (
-        <div>
+        <ul>
            {recipes.map((recipe: any) => (
-                <h1>{recipe.title}</h1>
+                <li>
+                    <Link to={`/recipes/${recipe._id}`}>{recipe.title}</Link>
+                </li>
            ))} 
-        </div>
+        </ul>
     );
 }
