@@ -21,20 +21,14 @@ export default function CreateRecipe() {
 function RecipeForm() {
     const { user } = useAuth();
 
-    const [resultImage, setResultImage] = useState("");
-
     const initialValues = {
         title: "",
         result: "",
         description: "",
         cookingTime: "",
-        difficulty: 1,
-        products: [
-            { name: "", amount: 0 }
-        ],
-        steps: [
-            { description: "", result: "" }
-        ],
+        //difficulty: ,
+        products: [],
+        steps: [],
     };
 
     const onSubmit = async (values: any) => {
@@ -42,25 +36,21 @@ function RecipeForm() {
             "Authorization": `Bearer ${user.token}`
         };
 
-        const recipe = {
-            ...values,
-            result: resultImage,
-        };
+        console.log(values);
 
-        console.log(recipe)
-
-        axios
+        //console.log(recipe)
+       /* axios
             .post("http://localhost:5000/recipes/create", recipe, { headers })
             .then(res => console.log(res))
-            .catch(err => console.log(err));
+            .catch(err => console.log(err));*/
     };
 
-    const handelResultImageChange = async (event: any) => {
+    /*const handelResultImageChange = async (event: any) => {
         const file = event.target.files[0];
         const base64: any = await convertBase64(file);
 
         setResultImage(base64);
-    };
+    };*/
 
     const formik = useFormik({
         initialValues,
@@ -70,8 +60,6 @@ function RecipeForm() {
     return (
         <FormikProvider value={formik}>
             <form onSubmit={formik.handleSubmit}>
-                <fieldset>
-                    <legend>Recipe</legend>
                     <TextField
                         fullWidth
                         name="title"
@@ -98,7 +86,7 @@ function RecipeForm() {
                         label="Result"
                         type="file"
                         value={formik.values.result}
-                        onChange={handelResultImageChange}
+                        onChange={formik.handleChange}
                         error={formik.touched.result && Boolean(formik.errors.result)}
                         helperText={formik.touched.result && formik.errors.result}
                     />
@@ -112,9 +100,6 @@ function RecipeForm() {
                         error={formik.touched.cookingTime && Boolean(formik.errors.cookingTime)}
                         helperText={formik.touched.cookingTime && formik.errors.cookingTime}
                     />
-                </fieldset>
-                <fieldset>
-                    <legend>Products</legend>
                     <FieldArray name="products">
                         {({ push, remove }) => (
                             <>
@@ -128,7 +113,6 @@ function RecipeForm() {
                                         />
                                         <TextField
                                             label="Amount"
-                                            type="text"
                                             name={`products.${index}.amount`}
                                             value={product.amount}
                                             onChange={formik.handleChange}
@@ -140,10 +124,7 @@ function RecipeForm() {
                             </>
                         )}
                     </FieldArray>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Steps</legend>
+                
                     <FieldArray name="steps">
                         {({ push, remove }) => (
                             <>
@@ -169,11 +150,10 @@ function RecipeForm() {
                                         <Button onClick={() => remove(index)}>X</Button>
                                     </div>
                                 ))}
-                                <Button onClick={() => push({ name: '', amount: '' })}>Add Step</Button>
+                                <Button onClick={() => push({ description: '', result: '' })}>Add Step</Button>
                             </>
                         )}
                     </FieldArray>
-                </fieldset>
                 <Button type="submit">Create</Button>
             </form>
         </FormikProvider>
