@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const recipesRoutes = require("./routes/recipes");
+const commentsRoutes = require("./routes/comments");
 
 const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DB_URL || "mongodb://0.0.0.0:27017/kitchen";
@@ -25,10 +26,7 @@ app.use(logger(":method :url :status :res[content-length] - :response-time ms"))
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/recipes", recipesRoutes);
-
-async function runServer() {
-    await mongoose.connect(DB_URL);
-}
+app.use("/comments", commentsRoutes);
 
 mongoose.connect(DB_URL).then(() => {
     console.log(`MongoDb Connection extablished to ${DB_URL}.`);

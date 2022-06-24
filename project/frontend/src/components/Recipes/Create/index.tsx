@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container } from "@mui/material";
 import RequireAuth from "../../Auth/RequireAuth";
 import { useAuth } from "../../../modules/authContext";
+
+import { convertBase64 } from "../../../modules/images";
 
 export default function CreateRecipe() {
     return (
@@ -18,6 +20,8 @@ export default function CreateRecipe() {
 
 function RecipeForm() {
     const { user } = useAuth();
+
+    const [resultImage, setResultImage] = useState("");
 
     const initialValues = {
         title: "",
@@ -33,15 +37,29 @@ function RecipeForm() {
         ],
     };
 
-    const onSubmit = (values: any) => {
+    const onSubmit = async (values: any) => {
         const headers = {
             "Authorization": `Bearer ${user.token}`
         };
 
+        const recipe = {
+            ...values,
+            result: resultImage,
+        };
+
+        console.log(recipe)
+
         axios
-            .post("http://localhost:5000/recipes/create", values, { headers })
+            .post("http://localhost:5000/recipes/create", recipe, { headers })
             .then(res => console.log(res))
             .catch(err => console.log(err));
+    };
+
+    const handelResultImageChange = async (event: any) => {
+        const file = event.target.files[0];
+        const base64: any = await convertBase64(file);
+
+        setResultImage(base64);
     };
 
     const formik = useFormik({
@@ -80,7 +98,7 @@ function RecipeForm() {
                         label="Result"
                         type="file"
                         value={formik.values.result}
-                        onChange={formik.handleChange}
+                        onChange={handelResultImageChange}
                         error={formik.touched.result && Boolean(formik.errors.result)}
                         helperText={formik.touched.result && formik.errors.result}
                     />

@@ -1,6 +1,6 @@
 const express = require("express");
 const { authenticate } = require("../utils");
-const { User, Recipe } = require("../models");
+const { User, Recipe, Comment } = require("../models");
 
 const router = express.Router();
 
@@ -49,11 +49,25 @@ router.get("/:id/recipes", authenticate, async (req, res) => {
 });
 
 router.get("/:id/comments", authenticate, async (req, res) => {
+    const userId = req.user.id;
 
-});
+    try {
+        const user = await User.findById(userId);
 
-router.post("/update/:id", (req, res) => {
+        if (!user) {
+            return res.status(404).send(`User with ${userId} not found`);
+        }
 
+        const comments = await Comment.where({ userId });
+
+        if(!recipes) {
+            return res.status(404).send(`User with ${userId} don't have comments`);
+        }
+
+        res.status(200).json(comments);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 module.exports = router;

@@ -22,6 +22,7 @@ const stepSchema = new mongoose.Schema({
     result: String,
 });
 
+// Todo YouTube link
 const recipeSchema = new mongoose.Schema({
     title: { type: String, required: true},
     result: { type: String, required: true},
@@ -35,7 +36,15 @@ const recipeSchema = new mongoose.Schema({
     updatedOn: { type: Date, default: Date.now },
 });
 
+const commentSchema = new mongoose.Schema({
+    body: { type: String, required: true },
+    userId: { type: ObjectId, required: true },
+    recipeId: { type: ObjectId, required: true },
+    createdOn: { type: Date, default: Date.now },
+});
+
 module.exports = {
     userSchema,
     recipeSchema,
+    commentSchema,
 };

@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Button, Container, TextField } from '@mui/material';
 
 import store from "../../modules/store";
-
+import { convertBase64 } from "../../modules/images";
 import { AuthContext, useAuth } from "../../modules/authContext";
 
 type AuthProviderProps = {
@@ -25,7 +25,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             .post("http://localhost:5000/auth/signup", newUser)
             .then(res => {
                 console.log(res);
-                navigate("/");
+                navigate("/auth/signin");
             })
             .catch(err => {
                 console.log(err);
@@ -98,7 +98,7 @@ export function SignIn() {
 export function SignUp() {
     const auth = useAuth();
 
-    const [avatar, setAvatar] = useState("");
+    const [avatar, setAvatar] = useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -114,21 +114,11 @@ export function SignUp() {
         }
     });
 
-    const handleAvatar = (event: any) => {
-        let files = event.target.files;
+    const handleAvatar = async (event: any) => {
+        const file = event.target.files[0];
+        const base64: any = await convertBase64(file);
 
-        console.log(files);
-
-        let fileReader = new FileReader();
-        fileReader.readAsDataURL(files[0]);
- 
-        fileReader.onload = (e) => {
-            let ava: string = (e.target?.result) as string;
-
-            setAvatar(ava);
-
-            console.log(avatar);
-        }
+        setAvatar(base64);
     };
 
     return (

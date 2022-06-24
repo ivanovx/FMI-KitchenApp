@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, Avatar } from "@mui/material";
 import { Link, Outlet } from "react-router-dom";
 
 import styles from "./layout.module.css";
@@ -33,7 +33,9 @@ export default function Layout() {
                         </Grid>
                         <Grid item xs={2}>
                             <span>
-                                Welcome <Link to="/user">{auth.user.user.username}</Link>!
+                                Welcome 
+                                <Avatar src={auth.user.user.avatar} component="span"  sx={{ display: "inline-block", width: 45, height: 45 }} />
+                                <Link to="/user">{auth.user.user.username}</Link>!
                             </span>
                             <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
                         </Grid>

@@ -5,7 +5,7 @@ const { authenticate } = require("../utils");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const recipes = await Recipe.find({});
+    const recipes = await Recipe.find({}).sort({ createdOn: -1 })
 
     res.status(200).json(recipes);
 });
