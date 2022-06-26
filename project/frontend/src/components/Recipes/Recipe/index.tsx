@@ -11,10 +11,6 @@ export default function Recipe() {
     const [recipe, setRecipe] = useState<any>({});
     const [comments, setComments] = useState<any>([]);
 
-    const headers = {
-        "Authorization": `Bearer ${auth.user.token}`
-    };
-
     useEffect(() => {
         axios
             .get(`http://localhost:5000/recipes/${id}`)
@@ -40,6 +36,10 @@ export default function Recipe() {
             body: ""
         },
         onSubmit: (values) => {
+            const headers = {
+                "Authorization": `Bearer ${auth.user.token}`
+            };
+            
             axios
                 .post(`http://localhost:5000/comments/${id}`, values, { headers })
                 .then(res => {
@@ -56,7 +56,7 @@ export default function Recipe() {
             </article>
             <aside>TODO</aside>
             <div>
-                <form onSubmit={formik.handleSubmit}>
+                {auth.user && <form onSubmit={formik.handleSubmit}>
                     <TextField 
                         multiline
                         fullWidth
@@ -68,7 +68,7 @@ export default function Recipe() {
                         helperText={formik.touched.body && formik.errors.body}
                     />
                     <Button type="submit">Comment</Button>
-                </form>
+                </form> }
                 {comments.map((comment: any, index: number) => (
                     <div key={index}>
                         {comment.body} - {comment.userId} - {comment.createdOn}
@@ -76,6 +76,5 @@ export default function Recipe() {
                 ))}
             </div>
         </>
-        
     )
 }

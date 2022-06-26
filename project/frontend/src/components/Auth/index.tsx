@@ -45,9 +45,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             });
     };
 
-    const signOut = () => {
-        setUser(null);
-    };
+    const signOut = () => setUser(null);
 
     return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>;
 }
@@ -79,7 +77,7 @@ export function SignIn() {
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={formik.touched.username && formik.errors.username}
                 />
-                 <TextField
+                <TextField
                     fullWidth
                     name="password"
                     label="Password"
@@ -152,7 +150,7 @@ export function SignUp() {
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={formik.touched.username && formik.errors.username}
                 />
-                 <TextField
+                <TextField
                     fullWidth
                     name="password"
                     label="Password"

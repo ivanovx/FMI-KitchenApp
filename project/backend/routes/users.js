@@ -4,26 +4,32 @@ const { User, Recipe, Comment } = require("../models");
 
 const router = express.Router();
 
-router.get("/me", authenticate, async (req, res) => {
-    const { id } = req.user;
-    
-    try {
-        const user = await User.findById(id);
-
-        if (!user) {
-            res.status(404).send(`User with ${id} not found`);
-        }
-
-        res.status(200).json(user);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
-
-router.get("/all", async (req, res) => {
+router.get("/", async (req, res) => {
     const users = await User.find({ isActive: true });
 
     res.status(200).json(users);
+});
+
+router.get("/:id", async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const {
+            avatar,
+            username,
+        } = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).send(`User with ${userId} not found`);
+        }
+
+        res.status(200).json({
+            avatar,
+            username,
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 router.get("/:id/recipes", authenticate, async (req, res) => {
@@ -65,6 +71,22 @@ router.get("/:id/comments", authenticate, async (req, res) => {
         }
 
         res.status(200).json(comments);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+router.get("/me", authenticate, async (req, res) => {
+    const { id } = req.user;
+    
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            res.status(404).send(`User with ${id} not found`);
+        }
+
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).json(err);
     }
