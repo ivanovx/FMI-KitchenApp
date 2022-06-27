@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import { Button, TextField } from "@mui/material";
+import { useParams } from "react-router-dom";
+
+import { Grid } from "@mui/material";
+
+import { Typography, Button, TextField, List, ListItem, ListItemText } from "@mui/material";
 import { useAuth } from "../../../modules/authContext";
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 
 export default function Recipe() {
     const auth = useAuth();
     const { id } = useParams();
-    const [recipe, setRecipe] = useState<any>({});
-    const [comments, setComments] = useState<any>([]);
+    const [recipe, setRecipe] = React.useState<any>({});
+    const [comments, setComments] = React.useState([]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios
             .get(`http://localhost:5000/recipes/${id}`)
             .then(res => {
@@ -21,7 +28,7 @@ export default function Recipe() {
             .catch(err => console.log(err));
     }, []);
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios
             .get(`http://localhost:5000/comments/${id}`)
             .then(res => {
@@ -39,7 +46,7 @@ export default function Recipe() {
             const headers = {
                 "Authorization": `Bearer ${auth.user.token}`
             };
-            
+
             axios
                 .post(`http://localhost:5000/comments/${id}`, values, { headers })
                 .then(res => {
@@ -50,12 +57,53 @@ export default function Recipe() {
     });
 
     return (
-        <>
-            <article>
+        <Grid container spacing={2}>
+            <Grid item xs={8}>
+                <img src={recipe.result} alt={recipe.title} />
                 <h1>{recipe.title}</h1>
-            </article>
-            <aside>TODO</aside>
-            <div>
+                <h3>{recipe.createdOn} | {recipe.userId}</h3>
+                <p>{recipe.description}</p>
+
+                {recipe.steps && recipe.steps.map((step: any, index: number) => (
+                    <Card sx={{marginTop: "1rem", marginBottom: "1rem"}} key={index}>
+                        <CardMedia
+                            component="img"
+                            height="140"
+                            image={step.result}
+                            alt={step.result}
+                        />
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Step {index + 1}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {step.description}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
+            </Grid>
+
+            <Grid item xs={4}>
+                <h2>Ingredients</h2>
+                <List dense>
+                    {recipe.products && recipe.products.map((ingredient: any, index: number) => (
+                        <ListItem key={index}>
+                            <ListItemText
+                                primary={ingredient.name}
+                                secondary={ingredient.amount}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+            </Grid>
+        </Grid>
+    )
+}
+
+/*
+
+  <div>
                 {auth.user && <form onSubmit={formik.handleSubmit}>
                     <TextField 
                         multiline
@@ -75,6 +123,4 @@ export default function Recipe() {
                     </div>
                 ))}
             </div>
-        </>
-    )
-}
+*/

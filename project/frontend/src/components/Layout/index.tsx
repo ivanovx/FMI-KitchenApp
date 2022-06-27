@@ -42,7 +42,11 @@ export default function Layout() {
                     </>
                 )}
             </Grid>
-            <Outlet />
+            <main className={styles.main}>
+                <Outlet />
+            </main>
+
+            
         </div>
     );
 }
