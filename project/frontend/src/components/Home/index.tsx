@@ -20,8 +20,8 @@ const Recipe = ({ recipe }: RecipeProps) => {
     return (
         <Card>
             <CardHeader
-                avatar={<Avatar>R</Avatar>}
-                title={recipe.userId}
+                avatar={<Avatar src={recipe._user.avatar} />}
+                title={recipe._user.username}
                 subheader={recipe.createdOn}
             />
             <CardMedia

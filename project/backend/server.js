@@ -18,8 +18,8 @@ const CORS_OPTIONS = {
 
 const app = express();
 
-app.use(bodyParser.json());
-//app.use(express.json());
+//app.use(bodyParser.json());
+app.use(express.json({ limit: '20mb' }));
 app.use(cors(CORS_OPTIONS));
 app.use(logger(":method :url :status :res[content-length] - :response-time ms"));
 

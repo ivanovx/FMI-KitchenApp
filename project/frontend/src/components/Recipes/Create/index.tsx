@@ -7,6 +7,7 @@ import RequireAuth from "../../Auth/RequireAuth";
 import { useAuth } from "../../../modules/authContext";
 
 import { convertBase64 } from "../../../modules/images";
+import { IndexRouteProps } from "react-router-dom";
 
 export default function CreateRecipe() {
     return (
@@ -21,12 +22,15 @@ export default function CreateRecipe() {
 function RecipeForm() {
     const { user } = useAuth();
 
+    const [result, setResult] = useState<string>("");
+    const [stepsResult, setStepsResult] = useState<any[]>([]);
+
     const initialValues = {
         title: "",
         result: "",
         description: "",
         cookingTime: "",
-        //difficulty: ,
+        level: "",
         products: [],
         steps: [],
     };
@@ -36,21 +40,46 @@ function RecipeForm() {
             "Authorization": `Bearer ${user.token}`
         };
 
-        console.log(values);
+        let steps: any[] = [];
 
-        //console.log(recipe)
-       /* axios
+        values.steps.map((step: any, index: number) => {
+            steps.push({
+                ...step,
+                result: stepsResult[index]
+            })
+        })
+
+       let recipe = {
+            ...values,
+            steps,
+            result,
+            level: "begginer",
+        };
+
+        axios
             .post("http://localhost:5000/recipes/create", recipe, { headers })
             .then(res => console.log(res))
-            .catch(err => console.log(err));*/
+            .catch(err => console.log(err));
     };
 
-    /*const handelResultImageChange = async (event: any) => {
+    const handleResultImageChange = async (event: any) => {
         const file = event.target.files[0];
         const base64: any = await convertBase64(file);
 
-        setResultImage(base64);
-    };*/
+        setResult(base64);
+    };
+
+    const handleStepResultImageChange = async (event: any, index: number) => {
+        const file = event.target.files[0];
+        const base64: any = await convertBase64(file);
+
+        setStepsResult((prevSteps: any) => {
+            return [
+                ...prevSteps,
+                prevSteps[index] = base64
+            ]
+        });
+    };
 
     const formik = useFormik({
         initialValues,
@@ -86,7 +115,7 @@ function RecipeForm() {
                         label="Result"
                         type="file"
                         value={formik.values.result}
-                        onChange={formik.handleChange}
+                        onChange={handleResultImageChange}
                         error={formik.touched.result && Boolean(formik.errors.result)}
                         helperText={formik.touched.result && formik.errors.result}
                     />
@@ -145,7 +174,7 @@ function RecipeForm() {
                                             type="file"
                                             name={`steps.${index}.result`}
                                             value={step.result}
-                                            onChange={formik.handleChange}
+                                            onChange={(e) => handleStepResultImageChange(e, index)}
                                         />
                                         <Button onClick={() => remove(index)}>X</Button>
                                     </div>

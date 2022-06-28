@@ -61,14 +61,12 @@ export default function Recipe() {
             <Grid item xs={8}>
                 <img src={recipe.result} alt={recipe.title} />
                 <h1>{recipe.title}</h1>
-                <h3>{recipe.createdOn} | {recipe.userId}</h3>
                 <p>{recipe.description}</p>
 
                 {recipe.steps && recipe.steps.map((step: any, index: number) => (
-                    <Card sx={{marginTop: "1rem", marginBottom: "1rem"}} key={index}>
+                    <Card sx={{ marginTop: "1rem", marginBottom: "1rem" }} key={index}>
                         <CardMedia
                             component="img"
-                            height="140"
                             image={step.result}
                             alt={step.result}
                         />
