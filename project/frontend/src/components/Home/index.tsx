@@ -40,17 +40,6 @@ const Recipe = ({ recipe }: RecipeProps) => {
     );
 };
 
-/*
- <ul>
-            {recipes.map((recipe: any) => (
-                 <li>
-                     <Link to={`/recipes/${recipe._id}`}>{recipe.title}</Link>
-                 </li>
-            ))} 
-         </ul>
-
-*/
-
 export default function Home() {
     const [recipes, setRecipes] = React.useState([]);
  

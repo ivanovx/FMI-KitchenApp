@@ -12,21 +12,30 @@ type RecipesProps = {
 export default function User() {
     const auth = useAuth();
 
+    useEffect(() => {
+        axios
+            .get(`http://localhost:5000/users/${auth.user.id}`)
+            .then(res => console.log(res));
+    }, []);
+
     return (
         <RequireAuth>
-            <h1>Weclome {auth.user.user.username}</h1>
+            <h1>Weclome {auth.user.username}</h1>
             <div>Change password</div>
-            <div>
-                <h3>My recipes</h3>
-                <Recipes userId={auth.user.user._id} />
-            </div>
-            <div>
-                <h3>My comments</h3>
-                <Comments userId={auth.user.user._id} />
-            </div>
+           
         </RequireAuth>
     );
 }
+/*
+ <div>
+                <h3>My recipes</h3>
+                <Recipes userId={auth.user._id} />
+            </div>
+            <div>
+                <h3>My comments</h3>
+                <Comments userId={auth.user._id} />
+            </div>
+*/
 
 function Recipes({ userId }: RecipesProps) {
     const { user } = useAuth(); 

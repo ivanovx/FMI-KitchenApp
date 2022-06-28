@@ -29,6 +29,7 @@ router.post("/signin", async (req, res) => {
 
     res.status(200).json({
         token,
+        id: user._id,
         avatar: user.avatar,
         username: user.username,
     });

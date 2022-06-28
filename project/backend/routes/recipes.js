@@ -14,7 +14,7 @@ router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
-        const recipe = await Recipe.findById(id).populate('_user', ["username"]);
+        const recipe = await Recipe.findById(id).populate("_comments");
 
         if(!recipe) {
             return res.status(404).send(`Recipe with ${id} not found`);

@@ -11,22 +11,16 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    const userId = req.user.id;
-
+    const userId = req.params.id;
+    
     try {
-        const {
-            avatar,
-            username,
-        } = await User.findById(userId);
+        const user = await User.findById(userId).populate("_comments");
 
         if (!user) {
             return res.status(404).send(`User with ${userId} not found`);
         }
 
-        res.status(200).json({
-            avatar,
-            username,
-        });
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).json(err);
     }

@@ -30,6 +30,8 @@ const userSchema = new Schema({
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true},
+    _comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
+    _recipes: [{ type: Schema.ObjectId, ref: 'Recipe' }]
 });
 
 const ingredientSchema = new Schema({
@@ -49,7 +51,7 @@ const stepSchema = new Schema({
     description: { 
         type: String,
         required: true,
-        maxlength: 1024 
+        maxlength: 1024
     },
 });
 
@@ -79,9 +81,10 @@ const recipeSchema = new Schema({
     tags: [{ type: String }],
     steps: [stepSchema],
     ingredients: [ingredientSchema],
-    _user : { type: Schema.ObjectId, ref: "User" },
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
+    _user : { type: Schema.ObjectId, ref: "User" },
+    _comments: [{ type: Schema.ObjectId, ref: 'Comment' }]
 });
 
 const commentSchema = new Schema({

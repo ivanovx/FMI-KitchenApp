@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container } from "@mui/material";
@@ -23,9 +24,9 @@ export default function CreateRecipe() {
 
 function RecipeForm() {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
-    const [result, setResult] = useState<string>("");
-    const [stepsResult, setStepsResult] = useState<any[]>([]);
+    const [result, setResult] = React.useState<string>("");
 
     const initialValues = {
         title: "",
@@ -50,7 +51,10 @@ function RecipeForm() {
 
         axios
             .post("http://localhost:5000/recipes/create", recipe, { headers })
-            .then(res => console.log(res))
+            .then(res => {
+                console.log(res);
+                navigate("/");
+            })
             .catch(err => console.log(err));
     };
 

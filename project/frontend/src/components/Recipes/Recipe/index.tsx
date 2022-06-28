@@ -19,7 +19,7 @@ export default function Recipe() {
     const auth = useAuth();
     const { id } = useParams();
     const [recipe, setRecipe] = React.useState<any>({});
-    const [comments, setComments] = React.useState<any[]>([]);
+    //const [comments, setComments] = React.useState<any[]>([]);
 
     React.useEffect(() => {
         axios
@@ -31,7 +31,7 @@ export default function Recipe() {
             .catch(err => console.log(err));
     }, []);
 
-    React.useEffect(() => {
+   /* React.useEffect(() => {
         axios
             .get(`http://localhost:5000/comments/${id}`)
             .then(res => {
@@ -39,7 +39,7 @@ export default function Recipe() {
                 setComments(res.data);
             })
             .catch(err => console.log(err));
-    }, []);
+    }, []);*/
 
     const formik = useFormik({
         initialValues: {
@@ -100,17 +100,6 @@ export default function Recipe() {
                         </ListItem>
                     ))}
                 </List>
-                <h2>Comments</h2>
-                <List dense>
-                    {comments.map((comment: any) => (
-                        <ListItem key={comment._id}>
-                            <ListItemText
-                                primary={comment.body}
-                                secondary={comment._user && comment._user.username}
-                            />
-                        </ListItem>
-                    ))}
-                </List>
 
                 <div>
                     {auth.user && <form onSubmit={formik.handleSubmit}>
@@ -132,3 +121,17 @@ export default function Recipe() {
         </Grid>
     )
 }
+
+/*
+ <h2>Comments</h2>
+                <List dense>
+                    {comments.map((comment: any) => (
+                        <ListItem key={comment._id}>
+                            <ListItemText
+                                primary={comment.body}
+                                secondary={comment._user && comment._user.username}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+*/
