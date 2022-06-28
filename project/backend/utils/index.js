@@ -38,7 +38,7 @@ function authenticate(req, res, next) {
         req.user = user;
 
         next();
-    })
+    });
 }
 
 module.exports = {

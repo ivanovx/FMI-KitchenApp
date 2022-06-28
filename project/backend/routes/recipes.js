@@ -28,6 +28,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/create", authenticate, async (req, res) => {
     const userId = req.user.id;
+    const tags = req.body.tags.split(",");
 
     const {
         title, 
@@ -35,7 +36,7 @@ router.post("/create", authenticate, async (req, res) => {
         description,
         cookingTime,
         level,
-        products,
+        ingredients,
         steps,
     } = req.body;   
 
@@ -45,18 +46,20 @@ router.post("/create", authenticate, async (req, res) => {
         description,
         cookingTime,
         level,
-        products,
+        ingredients,
         steps,
+        tags,
         _user: userId
     });
 
     try {
         await recipe.save();
+        
+        res.status(201).json(recipe);
     } catch(err) {
         res.status(500).json(err);
     }
-
-    res.status(201).json(recipe);
+   
 });
 
 module.exports = router;

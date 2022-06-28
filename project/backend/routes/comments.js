@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/:recipeId", async (req, res) => {
     const { recipeId } = req.params;
 
-    const comments = await Comment.where({ recipeId });
+    const comments = await Comment.find({});
 
     res.status(200).json(comments);
 });
@@ -18,9 +18,9 @@ router.post("/:recipeId", authenticate, async (req, res) => {
     const { recipeId } = req.params;
 
     const comment = new Comment({
-        userId,
-        recipeId,
-        body
+        body,
+        _user: userId,
+        _recipe: recipeId,
     });
 
     await comment.save();

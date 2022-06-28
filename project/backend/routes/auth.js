@@ -12,8 +12,8 @@ router.post("/signin", async (req, res) => {
         username,
         password
     } = req.body;
-    
-    const user = await User.where({ username }).findOne();
+
+    const user = await User.findOne({ username });
 
     if(!user) {
         res.status(401).send(`Username or password is incorrect`);
@@ -27,9 +27,10 @@ router.post("/signin", async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
 
-    res.status(200).json({ 
-        token, 
-        user,
+    res.status(200).json({
+        token,
+        avatar: user.avatar,
+        username: user.username,
     });
 });
 
@@ -43,24 +44,21 @@ router.post("/signup", async (req, res) => {
 
     const salt = bcrypt.genSaltSync(10);
     const password = await bcrypt.hash(req.body.password, salt);
-    const role = "user";
 
     const user = new User({ 
         name, 
         email, 
         username, 
         password, 
-        avatar, 
-        role,
+        avatar,
     });
 
     try {
         await user.save();
+        res.status(201).json(user);
     } catch(err) {
         res.status(500).json(err);
     }
-    
-    res.status(201).json(user);
 });
 
 module.exports = router;

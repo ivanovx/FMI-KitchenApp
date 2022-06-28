@@ -9,14 +9,17 @@ import { Typography, Button, TextField, List, ListItem, ListItemText } from "@mu
 import { useAuth } from "../../../modules/authContext";
 
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+
+import styles from "./recipe.module.css";
+
 
 export default function Recipe() {
     const auth = useAuth();
     const { id } = useParams();
     const [recipe, setRecipe] = React.useState<any>({});
-    const [comments, setComments] = React.useState([]);
+    const [comments, setComments] = React.useState<any[]>([]);
 
     React.useEffect(() => {
         axios
@@ -36,7 +39,7 @@ export default function Recipe() {
                 setComments(res.data);
             })
             .catch(err => console.log(err));
-    }, [])
+    }, []);
 
     const formik = useFormik({
         initialValues: {
@@ -59,22 +62,17 @@ export default function Recipe() {
     return (
         <Grid container spacing={2}>
             <Grid item xs={8}>
-                <img src={recipe.result} alt={recipe.title} />
+                <img className={styles.recipeImg} src={recipe.result} alt={recipe.title} />
                 <h1>{recipe.title}</h1>
+                <div>Recipe by {recipe._user && recipe._user.username}, createdOn {recipe.createdOn}</div>
                 <p>{recipe.description}</p>
-
                 {recipe.steps && recipe.steps.map((step: any, index: number) => (
                     <Card sx={{ marginTop: "1rem", marginBottom: "1rem" }} key={index}>
-                        <CardMedia
-                            component="img"
-                            image={step.result}
-                            alt={step.result}
-                        />
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">
                                 Step {index + 1}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2">
                                 {step.description}
                             </Typography>
                         </CardContent>
@@ -85,40 +83,52 @@ export default function Recipe() {
             <Grid item xs={4}>
                 <h2>Ingredients</h2>
                 <List dense>
-                    {recipe.products && recipe.products.map((ingredient: any, index: number) => (
-                        <ListItem key={index}>
+                    {recipe.ingredients && recipe.ingredients.map((ingredient: any) => (
+                        <ListItem key={ingredient.name}>
                             <ListItemText
                                 primary={ingredient.name}
-                                secondary={ingredient.amount}
+                                secondary={ingredient.quantity}
                             />
                         </ListItem>
                     ))}
                 </List>
+                <h2>Tags</h2>
+                <List dense>
+                    {recipe.tags && recipe.tags.map((tag: string) => (
+                        <ListItem key={tag}>
+                            <ListItemText primary={tag} />
+                        </ListItem>
+                    ))}
+                </List>
+                <h2>Comments</h2>
+                <List dense>
+                    {comments.map((comment: any) => (
+                        <ListItem key={comment._id}>
+                            <ListItemText
+                                primary={comment.body}
+                                secondary={comment._user && comment._user.username}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+
+                <div>
+                    {auth.user && <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                            multiline
+                            fullWidth
+                            rows={5}
+                            name="body"
+                            value={formik.values.body}
+                            onChange={formik.handleChange}
+                            error={formik.touched.body && Boolean(formik.errors.body)}
+                            helperText={formik.touched.body && formik.errors.body}
+                        />
+                        <Button type="submit">Comment</Button>
+                    </form>}
+
+                </div>
             </Grid>
         </Grid>
     )
 }
-
-/*
-
-  <div>
-                {auth.user && <form onSubmit={formik.handleSubmit}>
-                    <TextField 
-                        multiline
-                        fullWidth
-                        rows={5}
-                        name="body"
-                        value={formik.values.body}
-                        onChange={formik.handleChange}
-                        error={formik.touched.body && Boolean(formik.errors.body)}
-                        helperText={formik.touched.body && formik.errors.body}
-                    />
-                    <Button type="submit">Comment</Button>
-                </form> }
-                {comments.map((comment: any, index: number) => (
-                    <div key={index}>
-                        {comment.body} - {comment.userId} - {comment.createdOn}
-                    </div>
-                ))}
-            </div>
-*/

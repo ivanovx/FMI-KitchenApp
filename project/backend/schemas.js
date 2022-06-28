@@ -25,21 +25,32 @@ const userSchema = new Schema({
         type: String, 
         required: true
     },
-    role: { type: String },
+    role: { type: String, default: "user" },
     avatar: { type: String },
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true},
 });
 
-const productSchema = new Schema({
-    name: { type: String }, 
-    amount: { type: String },
+const ingredientSchema = new Schema({
+    name: { 
+        type: String,
+        required: true,
+        maxlength: 25,
+    }, 
+    quantity: { 
+        type: String,
+        required: true,
+        maxlength: 25,
+    },
 });
 
 const stepSchema = new Schema({
-    description: { type: String },
-    result: { type: String },
+    description: { 
+        type: String,
+        required: true,
+        maxlength: 1024 
+    },
 });
 
 const recipeSchema = new Schema({
@@ -65,20 +76,30 @@ const recipeSchema = new Schema({
         type: String, 
         required: true
     },
-    products: [productSchema],
+    tags: [{ type: String }],
     steps: [stepSchema],
+    ingredients: [ingredientSchema],
     _user : { type: Schema.ObjectId, ref: "User" },
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
 });
 
-// Todo
-// Here
 const commentSchema = new Schema({
-    body: { type: String, required: true },
-    userId: { type: Schema.ObjectId, required: true },
-    recipeId: { type: Schema.ObjectId, required: true },
+    body: { 
+        type: String, 
+        required: true,
+        maxlength: 256,
+    },
+    _user: { 
+        type: Schema.ObjectId,
+        ref: "User",
+    },
+    _recipe: { 
+        type: Schema.ObjectId,
+        ref: "Recipe"
+    },
     createdOn: { type: Date, default: Date.now },
+    updatedOn: { type: Date, default: Date.now },
 });
 
 module.exports = {

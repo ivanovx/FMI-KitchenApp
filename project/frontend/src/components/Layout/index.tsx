@@ -34,8 +34,8 @@ export default function Layout() {
                         <Grid item xs={2}>
                             <span>
                                 Welcome 
-                                <Avatar src={auth.user.user.avatar} component="span"  sx={{ display: "inline-block", width: 45, height: 45 }} />
-                                <Link to="/user">{auth.user.user.username}</Link>!
+                                <Avatar src={auth.user.avatar} component="span"  sx={{ display: "inline-block", width: 45, height: 45 }} />
+                                <Link to="/user">{auth.user.username}</Link>!
                             </span>
                             <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
                         </Grid>
