@@ -4,13 +4,13 @@ const { authenticate } = require("../utils");
 
 const router = express.Router();
 
-/*router.get("/:recipeId", async (req, res) => {
-    const { recipeId } = req.params;
+router.get("/:recipeId", async (req, res) => {
+    const recipe = req.params.recipeId;
 
-    const comments = await Recipe.findById(recipeId).populate("_comments")
+    const comments = await Comment.find({ recipe }).populate("_user", ["username"]);
 
     res.status(200).json(comments);
-});*/
+});
 
 router.post("/:recipeId", authenticate, async (req, res) => {
     const userId = req.user.id;

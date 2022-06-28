@@ -19,7 +19,7 @@ export default function Recipe() {
     const auth = useAuth();
     const { id } = useParams();
     const [recipe, setRecipe] = React.useState<any>({});
-    //const [comments, setComments] = React.useState<any[]>([]);
+    const [comments, setComments] = React.useState<any[]>([]);
 
     React.useEffect(() => {
         axios
@@ -31,15 +31,15 @@ export default function Recipe() {
             .catch(err => console.log(err));
     }, []);
 
-   /* React.useEffect(() => {
+    React.useEffect(() => {
         axios
-            .get(`http://localhost:5000/comments/${id}`)
+            .get(`http://localhost:5000/comments/${recipe._id}`)
             .then(res => {
                 console.log(res);
                 setComments(res.data);
             })
             .catch(err => console.log(err));
-    }, []);*/
+    }, []);
 
     const formik = useFormik({
         initialValues: {
@@ -54,6 +54,7 @@ export default function Recipe() {
                 .post(`http://localhost:5000/comments/${id}`, values, { headers })
                 .then(res => {
                     console.log(res);
+                    formik.resetForm();
                 })
                 .catch(err => console.log(err));
         }
@@ -101,6 +102,18 @@ export default function Recipe() {
                     ))}
                 </List>
 
+                <h2>Comments</h2>
+                <List dense>
+                    {comments.map((comment: any) => (
+                        <ListItem key={comment._id}>
+                            <ListItemText
+                                primary={comment.body}
+                                secondary={`by ${comment._user.username} on ${comment.createdOn}`}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+
                 <div>
                     {auth.user && <form onSubmit={formik.handleSubmit}>
                         <TextField
@@ -123,15 +136,5 @@ export default function Recipe() {
 }
 
 /*
- <h2>Comments</h2>
-                <List dense>
-                    {comments.map((comment: any) => (
-                        <ListItem key={comment._id}>
-                            <ListItemText
-                                primary={comment.body}
-                                secondary={comment._user && comment._user.username}
-                            />
-                        </ListItem>
-                    ))}
-                </List>
+ 
 */

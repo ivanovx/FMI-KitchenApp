@@ -30,8 +30,6 @@ const userSchema = new Schema({
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true},
-    _comments: [{ type: Schema.ObjectId, ref: 'Comment' }],
-    _recipes: [{ type: Schema.ObjectId, ref: 'Recipe' }]
 });
 
 const ingredientSchema = new Schema({
@@ -84,7 +82,6 @@ const recipeSchema = new Schema({
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
     _user : { type: Schema.ObjectId, ref: "User" },
-    _comments: [{ type: Schema.ObjectId, ref: 'Comment' }]
 });
 
 const commentSchema = new Schema({
@@ -93,11 +90,11 @@ const commentSchema = new Schema({
         required: true,
         maxlength: 256,
     },
-    _user: { 
+    _user: {
         type: Schema.ObjectId,
         ref: "User",
     },
-    _recipe: { 
+    _recipe: {
         type: Schema.ObjectId,
         ref: "Recipe"
     },

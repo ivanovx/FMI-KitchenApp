@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/signin", async (req, res) => {
     const {
         username,
-        password
+        password,
     } = req.body;
 
     const user = await User.findOne({ username });
