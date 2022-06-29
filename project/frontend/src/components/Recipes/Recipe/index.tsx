@@ -9,11 +9,9 @@ import { Typography, Button, TextField, List, ListItem, ListItemText } from "@mu
 import { useAuth } from "../../../modules/authContext";
 
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 
 import styles from "./recipe.module.css";
-
 
 export default function Recipe() {
     const auth = useAuth();
@@ -33,7 +31,7 @@ export default function Recipe() {
 
     React.useEffect(() => {
         axios
-            .get(`http://localhost:5000/comments/${recipe._id}`)
+            .get(`http://localhost:5000/comments/${id}`)
             .then(res => {
                 console.log(res);
                 setComments(res.data);
@@ -51,10 +49,17 @@ export default function Recipe() {
             };
 
             axios
-                .post(`http://localhost:5000/comments/${id}`, values, { headers })
+                .post(`http://localhost:5000/comments/${recipe._id}`, values, { headers })
                 .then(res => {
                     console.log(res);
                     formik.resetForm();
+                    axios
+                        .get(`http://localhost:5000/comments/${id}`)
+                        .then(res => {
+                            console.log(res);
+                            setComments(res.data);
+                        })
+                        .catch(err => console.log(err));
                 })
                 .catch(err => console.log(err));
         }
@@ -113,7 +118,7 @@ export default function Recipe() {
                         </ListItem>
                     ))}
                 </List>
-
+                
                 <div>
                     {auth.user && <form onSubmit={formik.handleSubmit}>
                         <TextField
@@ -134,7 +139,3 @@ export default function Recipe() {
         </Grid>
     )
 }
-
-/*
- 
-*/

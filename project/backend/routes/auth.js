@@ -16,13 +16,13 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ username });
 
     if(!user) {
-        res.status(401).send(`Username or password is incorrect`);
+        return res.status(401).send(`Username or password is incorrect`);
     }
 
     const passIsValid = await bcrypt.compare(password, user.password);
 
     if (!passIsValid) {
-        res.status(401).send(`Username or password is incorrect`);
+        return  res.status(401).send(`Username or password is incorrect`);
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React from "react";
 
 import { useAuth } from "../../modules/authContext";
 import RequireAuth from "../Auth/RequireAuth";
+import { useFormik } from "formik";
 
 type RecipesProps = {
     userId: string;
@@ -11,46 +12,79 @@ type RecipesProps = {
 
 export default function User() {
     const auth = useAuth();
+    const [user, setUser] = React.useState<any>({});
+   
+    const headers = {
+        "Authorization": `Bearer ${auth.user.token}`
+    };
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios
-            .get(`http://localhost:5000/users/${auth.user.id}`)
-            .then(res => console.log(res));
+            .get(`http://localhost:5000/users/${auth.user.id}`, { headers })
+            .then(res => {
+                console.log(res);
+                setUser(res.data);
+            });
     }, []);
+
+    const formik = useFormik({
+        initialValues: {
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            password: ""
+        },
+        onSubmit: (values) => {
+            console.log(values);
+        }
+    })
 
     return (
         <RequireAuth>
-            <h1>Weclome {auth.user.username}</h1>
-            <div>Change password</div>
-           
-        </RequireAuth>
-    );
-}
-/*
- <div>
+            <h1>Welcome {user.name}</h1>
+            <div>
                 <h3>My recipes</h3>
-                <Recipes userId={auth.user._id} />
+                <Recipes userId={auth.user.id} />
             </div>
             <div>
                 <h3>My comments</h3>
-                <Comments userId={auth.user._id} />
+                <Comments userId={auth.user.id} />
             </div>
-*/
+        </RequireAuth>
+    );
+}
 
 function Recipes({ userId }: RecipesProps) {
-    const { user } = useAuth(); 
-    const [recipes, setRecipes] = useState<any[]>([]);
-    
-    const headers = {
-        "Authorization": `Bearer ${user.token}`
-    };
+    const auth = useAuth();
+    const [recipes, setRecipes] = React.useState<any[]>([]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios
-            .get(`http://localhost:5000/users/${userId}/recipes`, { headers })
+            .get(`http://localhost:5000/users/${userId}/recipes`)
             .then(res => {
                 console.log(res);
                 setRecipes(res.data);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    const onDeleteRecipe = React.useCallback((recipeId: string) => {
+        const headers = {
+            "Authorization": `Bearer ${auth.user.token}`
+        };
+        
+        console.log("delete recipe");
+        axios
+            .delete(`http://localhost:5000/recipes/${recipeId}`, { headers })
+            .then(res => {
+                console.log(res);
+                axios
+                    .get(`http://localhost:5000/users/${userId}/recipes`)
+                    .then(res => {
+                        console.log(res);
+                        setRecipes(res.data);
+                    })
+                    .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
     }, []);
@@ -60,6 +94,8 @@ function Recipes({ userId }: RecipesProps) {
             {recipes.map((recipe: any, index: number) => (
                 <li key={index}>
                     <Link to={`/recipes/${recipe._id}`}>{recipe.title} - {recipe.createdOn}</Link>
+                    <Link to={`/recipes/update/${recipe._id}`}>Update</Link>
+                    <button onClick={(e) => onDeleteRecipe(recipe._id)}>Delete</button>
                 </li>
             ))}
         </ul>
@@ -67,19 +103,36 @@ function Recipes({ userId }: RecipesProps) {
 }
 
 function Comments({ userId }: RecipesProps) {
-    const { user } = useAuth(); 
-    const [comments, setComments] = useState<any[]>([]);
-    
-    const headers = {
-        "Authorization": `Bearer ${user.token}`
-    };
+    const auth = useAuth();
+    const [comments, setComments] = React.useState<any[]>([]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         axios
-            .get(`http://localhost:5000/users/${userId}/comments`, { headers })
+            .get(`http://localhost:5000/users/${userId}/comments`)
             .then(res => {
                 console.log(res);
                 setComments(res.data);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    const onDeleteComment = React.useCallback((commentId: string) => {
+        const headers = {
+            "Authorization": `Bearer ${auth.user.token}`
+        };
+        
+        console.log("delete comment");
+        axios
+            .delete(`http://localhost:5000/comments/${commentId}`, { headers })
+            .then(res => {
+                console.log(res);
+                axios
+                    .get(`http://localhost:5000/users/${userId}/comments`)
+                    .then(res => {
+                        console.log(res);
+                        setComments(res.data);
+                    })
+                    .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
     }, []);
@@ -88,7 +141,8 @@ function Comments({ userId }: RecipesProps) {
         <ul>
             {comments.map((comment: any, index: number) => (
                 <li key={index}>
-                    <Link to={`/recipes/${comment.recipeId}`}>{comment.recipeId} - {comment.createdOn}</Link>
+                    <Link to={`/recipes/${comment._recipe._id}`}>{comment._recipe.title} - {comment.createdOn}</Link>
+                    <button onClick={(e) => onDeleteComment(comment._id)}>Delete</button>
                 </li>
             ))}
         </ul>

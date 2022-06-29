@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/:recipeId", async (req, res) => {
     const recipe = req.params.recipeId;
 
-    const comments = await Comment.find({ recipe }).populate("_user", ["username"]);
+    const comments = await Comment.find({ _recipe: recipe }).populate("_user", ["username"]);
 
     res.status(200).json(comments);
 });
@@ -17,15 +17,33 @@ router.post("/:recipeId", authenticate, async (req, res) => {
     const { body } = req.body;
     const { recipeId } = req.params;
 
-    const comment = new Comment({
-        body,
-        _user: userId,
-        _recipe: recipeId,
-    });
-
-    await comment.save();
-
-    res.status(201).json(comment);
+    try {
+        const comment = new Comment({
+            body,
+            _user: userId,
+            _recipe: recipeId,
+        });
+    
+        await comment.save();
+    
+        res.status(201).json(comment);
+    } catch(err) {
+        res.status(500).json(err);
+    }
 });
+
+router.delete("/:commentId", authenticate, async (req, res) => {
+    const { commentId } = req.params;
+
+    try {
+        const comment = await Comment.findByIdAndDelete(commentId);
+
+        console.log(comment);
+
+        res.send(200).json(comment);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}); 
 
 module.exports = router;

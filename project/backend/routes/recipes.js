@@ -1,5 +1,5 @@
 const express = require("express");
-const { Recipe } = require("../models");
+const { Recipe, Comment } = require("../models");
 const { authenticate } = require("../utils");
 
 const router = express.Router();
@@ -26,6 +26,53 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+router.delete("/:id", authenticate, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const recipe = await Recipe.findByIdAndDelete(id);
+
+        console.log(recipe);
+
+        const recipeComments = await Comment.deleteMany({ _recipe: recipe._id});
+
+        console.log(recipeComments);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
+router.put("/:id", authenticate, async (req, res) => {
+    const recipeId = req.params.id;
+    const tags = req.body.tags.split(",");
+
+    const {
+        title, 
+        description,
+        cookingTime,
+        level,
+        ingredients,
+        steps,
+    } = req.body;
+
+    try {
+        const recipe = await Recipe.findByIdAndUpdate(recipeId, {
+            title,
+            description,
+            cookingTime,
+            level,
+            ingredients,
+            steps,
+            tags,
+            updatedOn: Date.now(),
+        });
+
+        res.status(200).json(recipe);
+    } catch(err) {
+        res.status(500).json(err);
+    }
+});
+
 router.post("/create", authenticate, async (req, res) => {
     const userId = req.user.id;
     const tags = req.body.tags.split(",");
@@ -38,7 +85,7 @@ router.post("/create", authenticate, async (req, res) => {
         level,
         ingredients,
         steps,
-    } = req.body;   
+    } = req.body;
 
     const recipe = new Recipe({
         title,
@@ -59,7 +106,6 @@ router.post("/create", authenticate, async (req, res) => {
     } catch(err) {
         res.status(500).json(err);
     }
-   
 });
 
 module.exports = router;

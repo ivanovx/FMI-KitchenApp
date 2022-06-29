@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(users);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticate, async (req, res) => {
     const userId = req.params.id;
     
     try {
@@ -58,7 +58,7 @@ router.get("/:id/comments", async (req, res) => {
             return res.status(404).send(`User with ${userId} not found`);
         }
 
-        const comments = await Comment.where({ _user: user._id });
+        const comments = await Comment.where({ _user: user._id }).populate("_recipe", ["title"]);
 
         if(!comments) {
             return res.status(404).send(`User with ${userId} don't have comments`);
