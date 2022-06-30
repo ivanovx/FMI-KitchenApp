@@ -1,15 +1,19 @@
 const express = require("express");
-const { User, Recipe, Comment } = require("../models");
+const { Comment } = require("../db/models");
 const { authenticate } = require("../utils");
 
 const router = express.Router();
 
 router.get("/:recipeId", async (req, res) => {
-    const recipe = req.params.recipeId;
+    const { recipeId } = req.params;
 
-    const comments = await Comment.find({ _recipe: recipe }).populate("_user", ["username"]);
+    try {
+        const comments = await Comment.find({ _recipe: recipeId }).populate("_user", ["username"]);
 
-    res.status(200).json(comments);
+        res.status(200).json(comments);
+    } catch(err) {
+        res.status(500).json(err);
+    }
 });
 
 router.post("/:recipeId", authenticate, async (req, res) => {
@@ -38,9 +42,7 @@ router.delete("/:commentId", authenticate, async (req, res) => {
     try {
         const comment = await Comment.findByIdAndDelete(commentId);
 
-        console.log(comment);
-
-        res.send(200).json(comment);
+        res.status(200).json(comment);
     } catch (err) {
         res.status(500).json(err);
     }

@@ -4,7 +4,7 @@ const userSchema = new Schema({
     name: { 
         type: String, 
         required: true,
-        maxlength: 20,
+        maxlength: 50,
     },
     email: { 
         type: String, 
@@ -19,7 +19,7 @@ const userSchema = new Schema({
         required: true, 
         unique: true, 
         index: true,
-        maxlength: 10,
+        maxlength: 20,
     },
     password: { 
         type: String, 
@@ -29,28 +29,9 @@ const userSchema = new Schema({
     avatar: { type: String },
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
-    isActive: { type: Boolean, default: true},
-});
-
-const ingredientSchema = new Schema({
-    name: { 
-        type: String,
-        required: true,
-        maxlength: 25,
-    }, 
-    quantity: { 
-        type: String,
-        required: true,
-        maxlength: 25,
-    },
-});
-
-const stepSchema = new Schema({
-    description: { 
-        type: String,
-        required: true,
-        maxlength: 1024
-    },
+    isActive: { type: Boolean, default: true },
+    _recipes: [{ type: Schema.ObjectId, ref: "Recipe" }],
+    _comments: [{ type: Schema.ObjectId, ref: "Comment" }]
 });
 
 const recipeSchema = new Schema({
@@ -77,8 +58,25 @@ const recipeSchema = new Schema({
         required: true
     },
     tags: [{ type: String }],
-    steps: [stepSchema],
-    ingredients: [ingredientSchema],
+    steps: [{
+        description: { 
+            type: String,
+            required: true,
+            maxlength: 1024
+        },
+    }],
+    ingredients: [{
+        name: { 
+            type: String,
+            required: true,
+            maxlength: 30,
+        }, 
+        quantity: { 
+            type: String,
+            required: true,
+            maxlength: 30,
+        },
+    }],
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
     _user : { type: Schema.ObjectId, ref: "User" },
@@ -90,16 +88,10 @@ const commentSchema = new Schema({
         required: true,
         maxlength: 256,
     },
-    _user: {
-        type: Schema.ObjectId,
-        ref: "User",
-    },
-    _recipe: {
-        type: Schema.ObjectId,
-        ref: "Recipe"
-    },
     createdOn: { type: Date, default: Date.now },
     updatedOn: { type: Date, default: Date.now },
+    _user: { type: Schema.ObjectId, ref: "User" },
+    _recipe: { type: Schema.ObjectId, ref: "Recipe" },
 });
 
 module.exports = {

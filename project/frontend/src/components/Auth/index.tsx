@@ -7,12 +7,13 @@ import { Button, Container, TextField } from '@mui/material';
 import store from "../../modules/store";
 import { convertBase64 } from "../../modules/images";
 import { AuthContext, useAuth } from "../../modules/authContext";
+import { SignInSchema, SignUpSchema } from "../../modules/schemas";
 
-type AuthProviderProps = {
+type IProps = {
     children: React.ReactNode;
 }
 
-export default function AuthProvider({ children }: AuthProviderProps) {
+export default function AuthProvider({ children }: IProps) {
     const navigate = useNavigate();
     const [user, setUser] = useState(store.get("user", null));
 
@@ -45,11 +46,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
             });
     };
 
-    const signOut = () => setUser(null);
+    const signOut = () => {
+        setUser(null);
+        navigate("/");
+    };
 
     return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>;
 }
-
 
 export function SignIn() {
     const auth = useAuth();
@@ -59,6 +62,7 @@ export function SignIn() {
             username: "",
             password: "",
         },
+        validationSchema: SignInSchema,
         onSubmit: (values: any) => {
             auth.signIn(values);
         }
@@ -106,6 +110,7 @@ export function SignUp() {
             password: "",
             avatar: "",
         },
+        validationSchema: SignUpSchema,
         onSubmit: (values: any) => {
             values.avatar = avatar;
             auth.signUp(values);

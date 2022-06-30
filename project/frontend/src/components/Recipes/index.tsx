@@ -16,31 +16,7 @@ type RecipeProps = {
     recipe: any;
 };
 
-const Recipe = ({ recipe }: RecipeProps) => {
-    return (
-        <Card>
-            <CardHeader
-                avatar={<Avatar src={recipe._user.avatar} />}
-                title={recipe._user.username}
-                subheader={recipe.createdOn}
-            />
-            <CardMedia
-                component="img"
-                height="195"
-                image={recipe.result}
-                alt={recipe.title}
-            />
-            <CardContent>
-                <Link to={`/recipes/${recipe._id}`}>
-                    <h3>{recipe.title}</h3>
-                </Link>
-                <Typography variant="body2">{recipe.description}</Typography>
-            </CardContent>
-        </Card>
-    );
-};
-
-export default function Home() {
+export default function Recipes() {
     const [recipes, setRecipes] = React.useState([]);
  
     React.useEffect(() => {
@@ -61,4 +37,28 @@ export default function Home() {
             })}
         </Grid>
      );
- }
+}
+
+const Recipe = ({ recipe }: RecipeProps) => {
+    return (
+        <Card>
+            <CardHeader
+                avatar={<Avatar src={recipe._user.avatar} />}
+                title={recipe._user.username}
+                subheader={recipe.createdOn}
+            />
+            <CardMedia
+                component="img"
+                height="195"
+                image={recipe.result}
+                alt={recipe.title}
+            />
+            <CardContent>
+                <Link to={`/recipes/${recipe._id}`}>
+                    <h3>{recipe.title}</h3> {recipe.level}
+                </Link>
+                <Typography variant="body2">{recipe.description}</Typography>
+            </CardContent>
+        </Card>
+    );
+};

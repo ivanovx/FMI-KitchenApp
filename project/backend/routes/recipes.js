@@ -1,13 +1,17 @@
 const express = require("express");
-const { Recipe, Comment } = require("../models");
+const { Recipe, Comment } = require("../db/models");
 const { authenticate } = require("../utils");
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const recipes = await Recipe.find({}).populate("_user", ["username", "avatar"]).sort({ createdOn: -1 });
+    try {
+        const recipes = await Recipe.find({}).populate("_user", ["username", "avatar"]).sort({ createdOn: -1 });
 
-    res.status(200).json(recipes);
+        res.status(200).json(recipes);
+    } catch(err) {
+        res.status(500).json(err);
+    }
 });
 
 router.get("/:id", async (req, res) => {
@@ -42,8 +46,9 @@ router.delete("/:id", authenticate, async (req, res) => {
     }
 });
 
+// todo
 router.put("/:id", authenticate, async (req, res) => {
-    const recipeId = req.params.id;
+    const { id } = req.params;
     const tags = req.body.tags.split(",");
 
     const {
@@ -56,16 +61,9 @@ router.put("/:id", authenticate, async (req, res) => {
     } = req.body;
 
     try {
-        const recipe = await Recipe.findByIdAndUpdate(recipeId, {
-            title,
-            description,
-            cookingTime,
-            level,
-            ingredients,
-            steps,
-            tags,
-            updatedOn: Date.now(),
-        });
+        const recipe = await Recipe.findByIdAndUpdate(recipeId, { $set: {
+            title: "updated title"
+        }});
 
         res.status(200).json(recipe);
     } catch(err) {
@@ -101,7 +99,6 @@ router.post("/create", authenticate, async (req, res) => {
 
     try {
         await recipe.save();
-        
         res.status(201).json(recipe);
     } catch(err) {
         res.status(500).json(err);

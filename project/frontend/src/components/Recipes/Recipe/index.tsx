@@ -12,6 +12,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
 import styles from "./recipe.module.css";
+import { CommentSchema } from "../../../modules/schemas";
 
 export default function Recipe() {
     const auth = useAuth();
@@ -43,6 +44,7 @@ export default function Recipe() {
         initialValues: {
             body: ""
         },
+        validationSchema: CommentSchema,
         onSubmit: (values) => {
             const headers = {
                 "Authorization": `Bearer ${auth.user.token}`
@@ -98,6 +100,7 @@ export default function Recipe() {
                         </ListItem>
                     ))}
                 </List>
+
                 <h2>Tags</h2>
                 <List dense>
                     {recipe.tags && recipe.tags.map((tag: string) => (

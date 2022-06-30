@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "oCZNQ18+utnogtmOtDo8XhF48TDKZ+Wn4rUOLUSKZD7dUJ+HTtKwfDJRNlGalIq7BqULvnsIBdMdv8/4qmbFvi5LqRPiMEFomZPHxkmQp4PZoRptL49VDFK6TZZNp/4uRkesPAOopQovMPzW7FdJTS+H+xnioYuKu7RCvN9u4JOMkWYhRohvsrzEF48eetDFmpCqxqnYjZuJXx33tJVQl9tqpgKxaHJSaog1dC2El9sGt6DGgHmxn90SsDqcWVW9yftXjFJgUuZwuBYyR2Bf8ZfDWgA/eHQ3zXZSOHzMAZRdSoNKW/212OP/tWH51KH1fQf6obfu6wham1kmtLfvGw==";
+const { JWT_SECRET } = require("./config");
 
 const authenticate = (req, res, next) => {
     const authHeader = req.headers["authorization"];
@@ -24,6 +24,5 @@ const authenticate = (req, res, next) => {
 }
 
 module.exports = {
-    JWT_SECRET,
-    authenticate,
+    authenticate
 };

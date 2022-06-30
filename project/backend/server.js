@@ -9,12 +9,7 @@ const usersRoutes = require("./routes/users");
 const recipesRoutes = require("./routes/recipes");
 const commentsRoutes = require("./routes/comments");
 
-const PORT = process.env.PORT || 5000;
-const DB_URL = process.env.DB_URL || "mongodb://0.0.0.0:27017/kitchen";
-
-const CORS_OPTIONS = {
-    origin: "http://localhost:3000"
-};
+const { PORT, DB_URL, CORS_OPTIONS } = require("./utils/config");
 
 const app = express();
 

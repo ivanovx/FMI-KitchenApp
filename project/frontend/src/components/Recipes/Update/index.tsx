@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { FormikProvider, FieldArray, useFormik } from "formik";
 import { TextField, Button, Container } from "@mui/material";
@@ -35,6 +35,7 @@ export default function UpdateRecipe() {
 function RecipeForm({ id }: any) {
     const { user } = useAuth();
     const navigate = useNavigate();
+
     const [recipe, setRecipe] = React.useState<IRecipe>({
         title: "",
         description: "",
@@ -55,15 +56,6 @@ function RecipeForm({ id }: any) {
             .catch(err => console.log(err));
     }, []);
 
-   /* const initialValues = {
-        title: recipe.title as string,
-        description: recipe.description as string,
-        cookingTime: recipe.cookingTime as number,*/
-      /*  level: recipe.level as string,
-        ingredients: recipe.ingredients,
-        steps: recipe.steps,*/
-   // };
-
     const formik = useFormik({
         initialValues: {
             title: recipe.title,
@@ -78,7 +70,7 @@ function RecipeForm({ id }: any) {
             const headers = {
                 "Authorization": `Bearer ${user.token}`
             };
-    
+
             axios
                 .put(`http://localhost:5000/recipes/${id}}`, values, { headers })
                 .then(res => {
@@ -102,7 +94,7 @@ function RecipeForm({ id }: any) {
                     error={formik.touched.title && Boolean(formik.errors.title)}
                     helperText={formik.touched.title && formik.errors.title}
                 />
-                 <TextField
+                <TextField
                     fullWidth
                     name="description"
                     label="Description"
@@ -124,7 +116,7 @@ function RecipeForm({ id }: any) {
                     helperText={formik.touched.cookingTime && formik.errors.cookingTime}
                 />
 
-<TextField
+                <TextField
                     fullWidth
                     name="tags"
                     label="Tags"
@@ -192,35 +184,8 @@ function RecipeForm({ id }: any) {
                         </>
                     )}
                 </FieldArray>
-               
-
                 <Button type="submit">Update</Button>
             </form>
         </FormikProvider>
     );
 }
-
-/*
- <TextField
-                    fullWidth
-                    name="description"
-                    label="Description"
-                    multiline
-                    rows={5}
-                    value={formik.values.description}
-                    onChange={formik.handleChange}
-                    error={formik.touched.description && Boolean(formik.errors.description)}
-                    helperText={formik.touched.description && formik.errors.description}
-                />
-                <TextField
-                    fullWidth
-                    name="cookingTime"
-                    label="Time"
-                    type="number"
-                    value={formik.values.cookingTime}
-                    onChange={formik.handleChange}
-                    error={formik.touched.cookingTime && Boolean(formik.errors.cookingTime)}
-                    helperText={formik.touched.cookingTime && formik.errors.cookingTime}
-                />
-
-*/

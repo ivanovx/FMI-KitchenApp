@@ -11,6 +11,7 @@ import { convertBase64 } from "../../../modules/images";
 
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { RecipeSchema } from "../../../modules/schemas";
 
 export default function CreateRecipe() {
     return (
@@ -28,46 +29,43 @@ function RecipeForm() {
 
     const [result, setResult] = React.useState<string>("");
 
-    const initialValues = {
-        title: "",
-        result: "",
-        description: "",
-        cookingTime: "",
-        level: "",
-        tags: "",
-        ingredients: [],
-        steps: [],
-    };
-
-    const onSubmit = (values: any) => {
-        const headers = {
-            "Authorization": `Bearer ${user.token}`
-        };
-
-        const recipe = {
-            ...values,
-            result,
-        };
-
-        axios
-            .post("http://localhost:5000/recipes/create", recipe, { headers })
-            .then(res => {
-                console.log(res);
-                navigate("/");
-            })
-            .catch(err => console.log(err));
-    };
-
     const handleResultImageChange = async (event: any) => {
         const file = event.target.files[0];
-        const result: any = await convertBase64(file);
+        const resultImg: any = await convertBase64(file);
 
-        setResult(result);
+        setResult(resultImg);
     };
 
     const formik = useFormik({
-        initialValues,
-        onSubmit,
+        initialValues: {
+            title: "",
+            result: "",
+            description: "",
+            cookingTime: "",
+            level: "",
+            tags: "",
+            ingredients: [],
+            steps: [],
+        },
+        validationSchema: RecipeSchema,
+        onSubmit: (values: any) => {
+            const headers = {
+                "Authorization": `Bearer ${user.token}`
+            };
+    
+            const recipe = {
+                ...values,
+                result,
+            };
+    
+            axios
+                .post("http://localhost:5000/recipes/create", recipe, { headers })
+                .then(res => {
+                    console.log(res);
+                    navigate("/");
+                })
+                .catch(err => console.log(err));
+        }
     });
 
     return (
@@ -157,7 +155,6 @@ function RecipeForm() {
                         </>
                     )}
                 </FieldArray>
-
                 <FieldArray name="steps">
                     {({ push, remove }) => (
                         <>
