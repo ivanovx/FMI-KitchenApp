@@ -64,7 +64,7 @@ function RecipeForm({ id }: any) {
             };
 
             axios
-                .post(`http://localhost:5000/recipes/${id}`, values, { headers })
+                .put(`http://localhost:5000/recipes/${id}`, values, { headers })
                 .then(res => {
                     console.log(res);
                     navigate("/");

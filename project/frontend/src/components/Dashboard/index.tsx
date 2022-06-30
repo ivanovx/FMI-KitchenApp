@@ -1,14 +1,14 @@
-import axios from "axios";
-import { Link } from "react-router-dom";
 import React from "react";
-
-import { useAuth } from "../../modules/authContext";
-import RequireAuth from "../Auth/RequireAuth";
+import axios from "axios";
 import { useFormik } from "formik";
+import { Link } from "react-router-dom";
 import { Box, Tabs, Tab, Button, TextField } from "@mui/material";
-import { IUser } from "../../types/IUser";
 
-type RecipesProps = {
+import { IUser } from "../../types/IUser";
+import RequireAuth from "../Auth/RequireAuth";
+import { useAuth } from "../../modules/authContext";
+
+type IProps = {
     userId: string;
 }
 
@@ -41,7 +41,10 @@ export default function Dashboard() {
     React.useEffect(() => {
         axios
             .get(`http://localhost:5000/users/${auth.user.id}`, { headers })
-            .then(res => setUser(res.data));
+            .then(res => {
+                console.log(res.data);
+                setUser(res.data)
+        });
     }, []);
 
     const formik = useFormik({
@@ -56,7 +59,7 @@ export default function Dashboard() {
             console.log(values);
 
             axios
-                .post(`http://localhost:5000/users/${user._id}`, values, { headers })
+                .put(`http://localhost:5000/users/${user._id}`, values, { headers })
                 .then(res => {
                     console.log(res);
                     axios
@@ -139,23 +142,7 @@ function TabPanel({ children, value, index, }: ITabPanelProps) {
     );
 }
 
-/*
- <h1>Welcome {user.name}</h1>
-            
-
-
-            <div>
-                <h3>My recipes</h3>
-                <Recipes userId={auth.user.id} />
-            </div>
-            <div>
-                <h3>My comments</h3>
-                <Comments userId={auth.user.id} />
-            </div>
-
-*/
-
-function Recipes({ userId }: RecipesProps) {
+function Recipes({ userId }: IProps) {
     const auth = useAuth();
     const [recipes, setRecipes] = React.useState<any[]>([]);
 
@@ -203,7 +190,7 @@ function Recipes({ userId }: RecipesProps) {
     )
 }
 
-function Comments({ userId }: RecipesProps) {
+function Comments({ userId }: IProps) {
     const auth = useAuth();
     const [comments, setComments] = React.useState<any[]>([]);
 

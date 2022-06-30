@@ -63,6 +63,9 @@ export default function Layout() {
                     <Link to="/">Recipes</Link>
                 </Grid>
                 <Grid item xs={2}>
+                    <Link to="/users">Users</Link>
+                </Grid>
+                <Grid item xs={2}>
                     <Link to="/recipes/search">Search</Link>
                 </Grid>
 

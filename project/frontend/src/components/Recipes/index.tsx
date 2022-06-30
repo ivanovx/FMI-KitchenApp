@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import {
+    Chip,
     Grid,
     Card,
     CardMedia,
@@ -39,7 +40,7 @@ export default function Recipes() {
      );
 }
 
-const Recipe = ({ recipe }: RecipeProps) => {
+export const Recipe = ({ recipe }: RecipeProps) => {
     return (
         <Card>
             <CardHeader
@@ -55,8 +56,9 @@ const Recipe = ({ recipe }: RecipeProps) => {
             />
             <CardContent>
                 <Link to={`/recipes/${recipe._id}`}>
-                    <h3>{recipe.title}</h3> {recipe.level}
+                    <h3>{recipe.title}</h3>
                 </Link>
+                <Chip label={recipe.level} variant="outlined" />
                 <Typography variant="body2">{recipe.description}</Typography>
             </CardContent>
         </Card>

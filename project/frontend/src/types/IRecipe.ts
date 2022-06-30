@@ -5,5 +5,6 @@ export type IRecipe = {
     tags: string;
     level: string;
     ingredients: any[];
-    steps: any[]
+    steps: any[];
+    [key: string]: any;
 }

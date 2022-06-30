@@ -45,7 +45,7 @@ router.delete("/:id", authenticate, async (req, res) => {
     }
 });
 
-router.post("/:id", authenticate, async (req, res) => {
+router.put("/:id", authenticate, async (req, res) => {
     const { id } = req.params;
     const tags = req.body.tags.split(",");
 
@@ -67,6 +67,7 @@ router.post("/:id", authenticate, async (req, res) => {
             ingredients,
             steps,
             tags,
+            updatedOn: Date.now(),
         }, { new: true });
 
         res.json(recipe);

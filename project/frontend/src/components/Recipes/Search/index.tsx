@@ -1,8 +1,13 @@
-import axios from "axios";
 import React from "react";
+import axios from "axios";
+import { Grid, TextField } from "@mui/material";
+
+import { IRecipe } from "../../../types/IRecipe";
+
+import { Recipe } from "..";
 
 export default function SearchRecipe() {
-    const [recipes, setRecipes] = React.useState<any[]>([]);
+    const [recipes, setRecipes] = React.useState<IRecipe[]>([]);
 
     React.useEffect(() => {
         axios
@@ -23,8 +28,17 @@ export default function SearchRecipe() {
     };
 
     return (
-        <div>
-            <input type="text" onChange={handleSearchInput} />
-        </div>
+        <>
+            <TextField label="Search" variant="outlined" onChange={handleSearchInput} />
+            <Grid container spacing={2}>
+                {recipes.map((recipe: any, index: number) => {
+                    return (
+                        <Grid item xs={4} sx={{ marginTop: "3rem", marginBottom: "3rem" }} key={index}>
+                            <Recipe recipe={recipe} />
+                        </Grid>
+                    );
+                })}
+            </Grid>
+        </>
     );
 };
