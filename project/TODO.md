@@ -1,4 +1,4 @@
-* User - Update
-* admin - users, comments, recipes - tabs
+* User, Recipe - Update
+* User panel - comments, recipes - tabs
 
 * Search recipe

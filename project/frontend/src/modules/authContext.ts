@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React from "react";
 
 type IAuthContext = {
     user: any;
@@ -7,11 +7,11 @@ type IAuthContext = {
     signOut: () => void;
 }
 
-export const AuthContext = createContext<IAuthContext>({
+export const AuthContext = React.createContext<IAuthContext>({
     user: null,
     signUp: () => {},
     signIn:  () => {},
     signOut: () => {},
 });
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => React.useContext(AuthContext);

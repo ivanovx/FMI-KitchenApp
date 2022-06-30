@@ -21,7 +21,7 @@ export default function App() {
                     <Route path="/recipes/:id" element={<Recipe />} />
                     <Route path="/recipes/create" element={<CreateRecipe />} />
                     <Route path="/recipes/update/:id" element={<UpdateRecipe />} />
-                    <Route path="/recipes/search" element={<SearchRecipe />} />
+                    <Route path="/search" element={<SearchRecipe />} />
                     <Route path="/auth/signin" element={<SignIn />} />
                     <Route path="/auth/signup" element={<SignUp />} />
                 </Route>

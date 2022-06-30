@@ -3,16 +3,22 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { useParams } from "react-router-dom";
 
-import { Grid } from "@mui/material";
+import { 
+    Grid,
+    Card,
+    Button,
+    List, 
+    ListItem, 
+    ListItemText,
+    TextField, 
+    Typography, 
+    CardContent,
+} from "@mui/material";
 
-import { Typography, Button, TextField, List, ListItem, ListItemText } from "@mui/material";
 import { useAuth } from "../../../modules/authContext";
-
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import { CommentSchema } from "../../../modules/schemas";
 
 import styles from "./recipe.module.css";
-import { CommentSchema } from "../../../modules/schemas";
 
 export default function Recipe() {
     const auth = useAuth();
@@ -136,7 +142,6 @@ export default function Recipe() {
                         />
                         <Button type="submit">Comment</Button>
                     </form>}
-
                 </div>
             </Grid>
         </Grid>

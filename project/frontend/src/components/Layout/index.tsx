@@ -1,52 +1,79 @@
 import React from "react";
-import { Grid, Button, Avatar } from "@mui/material";
 import { Link, Outlet } from "react-router-dom";
 
-import styles from "./layout.module.css";
+import {
+    Grid,
+    Button,
+    Avatar,
+    Container 
+} from "@mui/material";
+
+import { blue } from "@mui/material/colors";
+
 import { useAuth } from "../../modules/authContext";
 
 export default function Layout() {
     const auth = useAuth();
 
-    const signOut = () => auth.signOut();
+    const GuestUser = () => (
+        <>
+            <Grid item xs={2}>
+                <Link to="/auth/signin">Sign In</Link>
+            </Grid>
+            <Grid item xs={2}>
+                <Link to="/auth/signup">Sign Up</Link>
+            </Grid>
+        </>
+    );
+
+    const SignedUser = () => (
+        <>
+            <Grid item xs={2}>
+                <Link to="/recipes/create">Create Recipe</Link>
+            </Grid>
+            <Grid item xs={2}>
+                <span>
+                    Welcome
+                    <Avatar src={auth.user.avatar} component="span" sx={{ display: "inline-block", width: 45, height: 45 }} />
+                    <Link to="/user">{auth.user.username}</Link>!
+                </span>
+                <Button onClick={auth.signOut} color="primary" variant="outlined">Sign out</Button>
+            </Grid>
+        </>
+    );
+
+    const containerSx = { 
+        display: "flex", 
+        flexFlow: "column",
+        height: "100%",
+        flex: 1,
+        paddingY: "1rem",
+        borderRadius: "5px",
+        backgroundColor: blue[50], 
+    };
+
+    const mainSx =  {
+        marginY: "1rem"
+    };
 
     return (
-        <div className={styles.layout}>
+        <Container sx={containerSx}>
             <Grid direction="row" container spacing={2} justifyContent="center" alignItems="center">
                 <Grid item xs={2}>
-                    <Link to="/">Home</Link>
+                    <Link to="/">Recipes</Link>
                 </Grid>
-                {!auth.user && (
-                    <>
-                        <Grid item xs={2}>
-                            <Link to="/auth/signin">Sign In</Link>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Link to="/auth/signup">Sign Up</Link>
-                        </Grid>
-                    </>
-                )}
-                {auth.user && (
-                    <>
-                        <Grid item xs={2}>
-                            <Link to="/recipes/create">Create Recipe</Link>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <span>
-                                Welcome 
-                                <Avatar src={auth.user.avatar} component="span"  sx={{ display: "inline-block", width: 45, height: 45 }} />
-                                <Link to="/user">{auth.user.username}</Link>!
-                            </span>
-                            <Button onClick={signOut} color="primary" variant="outlined">Sign out</Button>
-                        </Grid>
-                    </>
-                )}
-            </Grid>
-            <main className={styles.main}>
-                <Outlet />
-            </main>
+                <Grid item xs={2}>
+                    <Link to="/search">Search</Link>
+                </Grid>
 
-            
-        </div>
+                {auth.user ? <SignedUser /> : <GuestUser />}
+            </Grid>
+            <Container component="main" sx={mainSx}>
+                <Outlet />
+            </Container>
+            <Container component="footer">
+                (c) Ivan Ivanov
+            </Container>
+        </Container>
     );
 }

@@ -2,34 +2,31 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import { FormikProvider, FieldArray, useFormik } from "formik";
-import { TextField, Button, Container } from "@mui/material";
-import RequireAuth from "../../Auth/RequireAuth";
-import { useAuth } from "../../../modules/authContext";
+import {
+    useFormik,
+    FieldArray, 
+    FormikProvider, 
+} from "formik";
 
+import { 
+    Select,
+    Button,
+    MenuItem,
+    TextField,
+} from "@mui/material";
+
+import RequireAuth from "../../Auth/RequireAuth";
+
+import { RecipeSchema } from "../../../modules/schemas";
+import { useAuth } from "../../../modules/authContext";
 import { convertBase64 } from "../../../modules/images";
 
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { RecipeSchema } from "../../../modules/schemas";
-
 export default function CreateRecipe() {
-    return (
-        <RequireAuth>
-            <Container maxWidth="md" sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
-                <RecipeForm />
-            </Container>
-        </RequireAuth>
-    );
-}
-
-function RecipeForm() {
-    const { user } = useAuth();
+    const auth = useAuth();
     const navigate = useNavigate();
-
     const [result, setResult] = React.useState<string>("");
 
-    const handleResultImageChange = async (event: any) => {
+    const handleResultChange = async (event: any) => {
         const file = event.target.files[0];
         const resultImg: any = await convertBase64(file);
 
@@ -50,7 +47,7 @@ function RecipeForm() {
         validationSchema: RecipeSchema,
         onSubmit: (values: any) => {
             const headers = {
-                "Authorization": `Bearer ${user.token}`
+                "Authorization": `Bearer ${auth.user.token}`
             };
     
             const recipe = {
@@ -69,7 +66,8 @@ function RecipeForm() {
     });
 
     return (
-        <FormikProvider value={formik}>
+        <RequireAuth>
+            <FormikProvider value={formik}>
             <form onSubmit={formik.handleSubmit}>
                 <TextField
                     fullWidth
@@ -97,7 +95,7 @@ function RecipeForm() {
                     label="Result"
                     type="file"
                     value={formik.values.result}
-                    onChange={handleResultImageChange}
+                    onChange={handleResultChange}
                 />
                 <TextField
                     fullWidth
@@ -179,5 +177,6 @@ function RecipeForm() {
                 <Button type="submit">Create</Button>
             </form>
         </FormikProvider>
+        </RequireAuth>
     );
-}
+};
