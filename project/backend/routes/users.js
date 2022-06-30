@@ -30,6 +30,28 @@ router.get("/:id", authenticate, async (req, res) => {
     }
 });
 
+router.post("/:id", authenticate, async (req, res) => {
+    const { id } = req.params;
+
+    const {
+        name,
+        email,
+        username,
+    } = req.body;
+    
+    try {
+        const user = await User.findByIdAndUpdate(id, { name, username, email }, { new: true });
+
+        if (!user) {
+            return res.status(404).send(`User with ${id} not found`);
+        }
+
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 router.get("/:id/recipes", async (req, res) => {
     const { id } = req.params;
 

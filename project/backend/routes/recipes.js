@@ -45,12 +45,9 @@ router.delete("/:id", authenticate, async (req, res) => {
     }
 });
 
-// todo
-router.put("/:id", authenticate, async (req, res) => {
+router.post("/:id", authenticate, async (req, res) => {
     const { id } = req.params;
-
-    //const _id = mongoose.Types.ObjectId(id);
-    /*const tags = req.body.tags.split(",");
+    const tags = req.body.tags.split(",");
 
     const {
         title, 
@@ -59,21 +56,23 @@ router.put("/:id", authenticate, async (req, res) => {
         level,
         ingredients,
         steps,
-    } = req.body; */
+    } = req.body;
 
-    //try {
-      /*  const recipe = await Recipe.findByIdAndUpdate(id, {
-            title: "updated title"
-        });*/
+   try {
+        const recipe = await Recipe.findByIdAndUpdate(id, {
+            title,
+            description,
+            cookingTime,
+            level,
+            ingredients,
+            steps,
+            tags,
+        }, { new: true });
 
-     //   const recipe = await Recipe.findByIdAndUpdate(_id, { title: "new title"}, { new: true });
-
-     //   res.json(recipe)
-   // } catch(err) {
-    //    res.status(500).json(err);
-   // }
-
-   res.send(id);
+        res.json(recipe);
+    } catch(err) {
+        res.status(500).json(err);
+    }
 });
 
 router.post("/create", authenticate, async (req, res) => {

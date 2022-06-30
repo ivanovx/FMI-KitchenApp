@@ -9,16 +9,8 @@ import { useAuth } from "../../../modules/authContext";
 
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { IRecipe } from "../../../types/IRecipe";
 
-type IRecipe = {
-    title: string;
-    description: string;
-    cookingTime: number;
-    tags: string;
-    level: string;
-    ingredients: any[];
-    steps: any[]
-}
 
 export default function UpdateRecipe() {
     const { id } = useParams();
@@ -72,7 +64,7 @@ function RecipeForm({ id }: any) {
             };
 
             axios
-                .put(`http://localhost:5000/recipes/${id}}`, values, { headers })
+                .post(`http://localhost:5000/recipes/${id}`, values, { headers })
                 .then(res => {
                     console.log(res);
                     navigate("/");

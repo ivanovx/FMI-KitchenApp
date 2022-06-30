@@ -35,7 +35,7 @@ export default function Layout() {
                 <span>
                     Welcome
                     <Avatar src={auth.user.avatar} component="span" sx={{ display: "inline-block", width: 45, height: 45 }} />
-                    <Link to="/user">{auth.user.username}</Link>!
+                    <Link to="/dashboard">{auth.user.username}</Link>!
                 </span>
                 <Button onClick={auth.signOut} color="primary" variant="outlined">Sign out</Button>
             </Grid>
@@ -63,7 +63,7 @@ export default function Layout() {
                     <Link to="/">Recipes</Link>
                 </Grid>
                 <Grid item xs={2}>
-                    <Link to="/search">Search</Link>
+                    <Link to="/recipes/search">Search</Link>
                 </Grid>
 
                 {auth.user ? <SignedUser /> : <GuestUser />}
