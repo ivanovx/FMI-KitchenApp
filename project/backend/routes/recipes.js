@@ -2,6 +2,8 @@ const express = require("express");
 const { Recipe, Comment } = require("../db/models");
 const { authenticate } = require("../utils");
 
+const mongoose = require("mongoose");
+
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -35,12 +37,9 @@ router.delete("/:id", authenticate, async (req, res) => {
 
     try {
         const recipe = await Recipe.findByIdAndDelete(id);
-
-        console.log(recipe);
-
         const recipeComments = await Comment.deleteMany({ _recipe: recipe._id});
 
-        console.log(recipeComments);
+        res.json(recipe);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -49,7 +48,9 @@ router.delete("/:id", authenticate, async (req, res) => {
 // todo
 router.put("/:id", authenticate, async (req, res) => {
     const { id } = req.params;
-    const tags = req.body.tags.split(",");
+
+    //const _id = mongoose.Types.ObjectId(id);
+    /*const tags = req.body.tags.split(",");
 
     const {
         title, 
@@ -58,17 +59,21 @@ router.put("/:id", authenticate, async (req, res) => {
         level,
         ingredients,
         steps,
-    } = req.body;
+    } = req.body; */
 
-    try {
-        const recipe = await Recipe.findByIdAndUpdate(recipeId, { $set: {
+    //try {
+      /*  const recipe = await Recipe.findByIdAndUpdate(id, {
             title: "updated title"
-        }});
+        });*/
 
-        res.status(200).json(recipe);
-    } catch(err) {
-        res.status(500).json(err);
-    }
+     //   const recipe = await Recipe.findByIdAndUpdate(_id, { title: "new title"}, { new: true });
+
+     //   res.json(recipe)
+   // } catch(err) {
+    //    res.status(500).json(err);
+   // }
+
+   res.send(id);
 });
 
 router.post("/create", authenticate, async (req, res) => {

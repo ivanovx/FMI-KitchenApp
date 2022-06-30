@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useFormik } from "formik";
@@ -8,6 +8,7 @@ import store from "../../modules/store";
 import { convertBase64 } from "../../modules/images";
 import { AuthContext, useAuth } from "../../modules/authContext";
 import { SignInSchema, SignUpSchema } from "../../modules/schemas";
+import Toast from "../Toast";
 
 type IProps = {
     children: React.ReactNode;
@@ -15,9 +16,11 @@ type IProps = {
 
 export default function AuthProvider({ children }: IProps) {
     const navigate = useNavigate();
-    const [user, setUser] = useState(store.get("user", null));
+    
+    const [error, setError] = React.useState(null);
+    const [user, setUser] = React.useState(store.get("user", null));
 
-    useEffect(() => {
+    React.useEffect(() => {
         store.set("user", user);
     }, [user]);
 
@@ -26,9 +29,11 @@ export default function AuthProvider({ children }: IProps) {
             .post("http://localhost:5000/auth/signup", newUser)
             .then(res => {
                 console.log(res);
+                setError(null);
                 navigate("/auth/signin");
             })
             .catch(err => {
+                setError(err.response.data);
                 console.log(err);
             });
     };
@@ -39,9 +44,11 @@ export default function AuthProvider({ children }: IProps) {
             .then(res => {
                 console.log(res);
                 setUser(res.data);
+                setError(null);
                 navigate("/");
             })
             .catch(err => {
+                setError(err.response.data);
                 console.log(err);
             });
     };
@@ -51,7 +58,7 @@ export default function AuthProvider({ children }: IProps) {
         navigate("/");
     };
 
-    return <AuthContext.Provider value={{ user, signUp, signIn, signOut }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, error, signUp, signIn, signOut }}>{children}</AuthContext.Provider>;
 }
 
 export function SignIn() {
@@ -71,6 +78,7 @@ export function SignIn() {
     return (
         <Container>
             <h2>Sign In</h2>
+            {auth.error && <Toast isOpen={true} type="error" message={auth.error} />}
             <form onSubmit={formik.handleSubmit}>
                 <TextField
                     fullWidth
@@ -100,7 +108,7 @@ export function SignIn() {
 export function SignUp() {
     const auth = useAuth();
 
-    const [avatar, setAvatar] = useState(null);
+    const [avatar, setAvatar] = React.useState(null);
 
     const formik = useFormik({
         initialValues: {

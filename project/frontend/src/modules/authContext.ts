@@ -2,6 +2,7 @@ import React from "react";
 
 type IAuthContext = {
     user: any;
+    error: any;
     signUp: (user: any) => void;
     signIn:  (user: any) => void;
     signOut: () => void;
@@ -9,6 +10,7 @@ type IAuthContext = {
 
 export const AuthContext = React.createContext<IAuthContext>({
     user: null,
+    error: null,
     signUp: () => {},
     signIn:  () => {},
     signOut: () => {},
