@@ -1,15 +1,18 @@
 import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
-import { Box, Tabs, Tab, Button, TextField } from "@mui/material";
+import { Box, Tabs, Tab, Button, TextField, Stack, Divider, List, ListItem, ListItemText, ListItemButton } from "@mui/material";
 
-import { IUser } from "../../types/IUser";
 import RequireAuth from "../Auth/RequireAuth";
 import { useAuth } from "../../modules/authContext";
 
+import { IUser } from "../../types/IUser";
+import { IRecipe } from "../../types/IRecipe";
+import { IComment } from "../../types/IComent";
+
 type IProps = {
     userId: string;
+    token: string;
 }
 
 type ITabPanelProps = {
@@ -44,7 +47,7 @@ export default function Dashboard() {
             .then(res => {
                 console.log(res.data);
                 setUser(res.data)
-        });
+            });
     }, []);
 
     const formik = useFormik({
@@ -72,64 +75,64 @@ export default function Dashboard() {
 
     return (
         <RequireAuth>
-            <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="Me" />
-                        <Tab label="My Recipes" />
-                        <Tab label="My Comments" />
-                    </Tabs>
-                </Box>
-                <TabPanel value={value} index={0}>
-                    <h2>Hi, {user.name}</h2>
-                    <form onSubmit={formik.handleSubmit}>
-                        <TextField
-                            fullWidth
-                            name="name"
-                            label="Name"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
-                        />
-                        <TextField
-                            fullWidth
-                            name="email"
-                            label="Email"
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
-                        />
-                        <TextField
-                            fullWidth
-                            name="username"
-                            label="Username"
-                            value={formik.values.username}
-                            onChange={formik.handleChange}
-                            error={formik.touched.username && Boolean(formik.errors.username)}
-                            helperText={formik.touched.username && formik.errors.username}
-                        />
-                        <TextField
-                            fullWidth
-                            name="password"
-                            label="New password"
-                            type="password"
-                            value={formik.values.newPassword}
-                            onChange={formik.handleChange}
-                            error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
-                            helperText={formik.touched.newPassword && formik.errors.newPassword}
-                        />
-                        <Button type="submit">Update profile</Button>
-                    </form>
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                    <Recipes userId={user._id} />
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                    <Comments userId={user._id} />
-                </TabPanel>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tab label="Me" />
+                    <Tab label="My Recipes" />
+                    <Tab label="My Comments" />
+                </Tabs>
             </Box>
+            <TabPanel value={value} index={0}>
+                <h2>Hi, {user.name}</h2>
+                <p>Active from {user.createdOn}</p>
+                <p>Last updated {user.updatedOn}</p>
+                <form onSubmit={formik.handleSubmit}>
+                    <TextField
+                        fullWidth
+                        name="name"
+                        label="Name"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        error={formik.touched.name && Boolean(formik.errors.name)}
+                        helperText={formik.touched.name && formik.errors.name}
+                    />
+                    <TextField
+                        fullWidth
+                        name="email"
+                        label="Email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
+                    <TextField
+                        fullWidth
+                        name="username"
+                        label="Username"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                        error={formik.touched.username && Boolean(formik.errors.username)}
+                        helperText={formik.touched.username && formik.errors.username}
+                    />
+                    <TextField
+                        fullWidth
+                        name="newPassword"
+                        label="New password"
+                        type="password"
+                        value={formik.values.newPassword}
+                        onChange={formik.handleChange}
+                        error={formik.touched.newPassword && Boolean(formik.errors.newPassword)}
+                        helperText={formik.touched.newPassword && formik.errors.newPassword}
+                    />
+                    <Button type="submit">Update profile</Button>
+                </form>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <Recipes userId={user._id} token={auth.user.token} />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <Comments userId={user._id} token={auth.user.token} />
+            </TabPanel>
         </RequireAuth>
     );
 }
@@ -142,9 +145,8 @@ function TabPanel({ children, value, index, }: ITabPanelProps) {
     );
 }
 
-function Recipes({ userId }: IProps) {
-    const auth = useAuth();
-    const [recipes, setRecipes] = React.useState<any[]>([]);
+function Recipes({ userId, token }: IProps) {
+    const [recipes, setRecipes] = React.useState<IRecipe[]>([]);
 
     React.useEffect(() => {
         axios
@@ -158,7 +160,7 @@ function Recipes({ userId }: IProps) {
 
     const onDeleteRecipe = React.useCallback((recipeId: string) => {
         const headers = {
-            "Authorization": `Bearer ${auth.user.token}`
+            "Authorization": `Bearer ${token}`
         };
 
         console.log("delete recipe");
@@ -178,21 +180,25 @@ function Recipes({ userId }: IProps) {
     }, []);
 
     return (
-        <ul>
-            {recipes.map((recipe: any, index: number) => (
-                <li key={index}>
-                    <Link to={`/recipes/${recipe._id}`}>{recipe.title} - {recipe.createdOn}</Link>
-                    <Link to={`/recipes/update/${recipe._id}`}>Update</Link>
-                    <button onClick={(e) => onDeleteRecipe(recipe._id)}>Delete</button>
-                </li>
-            ))}
-        </ul>
-    )
+        <Stack spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
+            <List>
+                {recipes.map(recipe => (
+                    <ListItem key={recipe._id}>
+                        <ListItemText
+                            primary={recipe.title}
+                            secondary={recipe.createdOn}
+                        />
+                        <ListItemButton href={`/recipes/update/${recipe._id}`}>Update</ListItemButton>
+                        <ListItemButton onClick={(e) => onDeleteRecipe(recipe._id)}>Delete</ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Stack>
+    );
 }
 
-function Comments({ userId }: IProps) {
-    const auth = useAuth();
-    const [comments, setComments] = React.useState<any[]>([]);
+function Comments({ userId, token }: IProps) {
+    const [comments, setComments] = React.useState<IComment[]>([]);
 
     React.useEffect(() => {
         axios
@@ -206,7 +212,7 @@ function Comments({ userId }: IProps) {
 
     const onDeleteComment = React.useCallback((commentId: string) => {
         const headers = {
-            "Authorization": `Bearer ${auth.user.token}`
+            "Authorization": `Bearer ${token}`
         };
 
         console.log("delete comment");
@@ -226,13 +232,18 @@ function Comments({ userId }: IProps) {
     }, []);
 
     return (
-        <ul>
-            {comments.map((comment: any, index: number) => (
-                <li key={index}>
-                    <Link to={`/recipes/${comment._recipe._id}`}>{comment._recipe.title} - {comment.createdOn}</Link>
-                    <button onClick={(e) => onDeleteComment(comment._id)}>Delete</button>
-                </li>
-            ))}
-        </ul>
-    )
+        <Stack spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
+            <List>
+                {comments.map(comment => (
+                    <ListItem key={comment._id}>
+                        <ListItemText
+                            primary={comment._recipe.title}
+                            secondary={comment.body}
+                        />
+                        <ListItemButton onClick={(e) => onDeleteComment(comment._id)}>Delete</ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Stack>
+    );
 }
