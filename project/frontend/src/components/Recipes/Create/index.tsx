@@ -174,7 +174,7 @@ export default function CreateRecipe() {
                         </>
                     )}
                 </FieldArray>
-                <Button type="submit">Create</Button>
+              <Button type="submit">Create</Button>
             </form>
         </FormikProvider>
         </RequireAuth>

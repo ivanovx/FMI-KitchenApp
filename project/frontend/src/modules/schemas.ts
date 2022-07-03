@@ -38,7 +38,7 @@ export const RecipeSchema = Yup.object().shape({
         .positive("Cannot be number under zero")
         .required("Required"),
     tags: Yup.string(),
-    level: Yup.string().required("Required"),
+    level: Yup.string(),
     steps: Yup.array()
         .of(
             Yup.object().shape({

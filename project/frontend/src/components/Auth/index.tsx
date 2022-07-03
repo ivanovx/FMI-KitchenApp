@@ -120,8 +120,12 @@ export function SignUp() {
         },
         validationSchema: SignUpSchema,
         onSubmit: (values: any) => {
-            values.avatar = avatar;
-            auth.signUp(values);
+            let user = {
+                ...values,
+                avatar,
+            };
+
+            auth.signUp(user);
         }
     });
 
@@ -180,8 +184,8 @@ export function SignUp() {
                     type="file"
                     value={formik.values.avatar}
                     onChange={handleAvatar}
-                    error={formik.touched.avatar && Boolean(formik.errors.avatar)}
-                    helperText={formik.touched.avatar && formik.errors.avatar}
+                    //error={formik.touched.avatar && Boolean(formik.errors.avatar)}
+                    //helperText={formik.touched.avatar && formik.errors.avatar}
                 />
                 <Button type="submit">Sign Up</Button>
             </form>

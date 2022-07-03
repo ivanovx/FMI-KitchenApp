@@ -12,6 +12,7 @@ import UpdateRecipe from "./components/Recipes/Update";
 import SearchRecipe from "./components/Recipes/Search";
 
 import Users from "./components/Users";
+import UserRecipes from "./components/Users/Recipes";
 
 export default function App() {
     return (
@@ -25,6 +26,7 @@ export default function App() {
                     <Route path="/recipes/create" element={<CreateRecipe />} />
                     <Route path="/recipes/update/:id" element={<UpdateRecipe />} />
                     <Route path="/users" element={<Users />} />
+                    <Route path="/users/:id" element={<UserRecipes />} />
                     <Route path="/auth/signin" element={<SignIn />} />
                     <Route path="/auth/signup" element={<SignUp />} />
                 </Route>
