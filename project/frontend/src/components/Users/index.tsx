@@ -19,6 +19,7 @@ export default function Users() {
     const goToUser = (id: string) => {
         navigate(`/users/${id}`);
     };
+    
 
     return (
         <List>
